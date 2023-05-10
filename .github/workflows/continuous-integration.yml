@@ -1,0 +1,28 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+name: ☀️
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: continuous-integration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: /
+    uses: cassiecascade/houseplant/.github/workflows/check.yml@main
+
+  test:
+    name: /
+    uses: cassiecascade/houseplant/.github/workflows/test.yml@main
+
+  build:
+    name: /
+    uses: cassiecascade/houseplant/.github/workflows/build.yml@main
