@@ -32,3 +32,12 @@ jobs:
         with:
           deno-version: v1.x
       - run: deno fmt --check
+  
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: denoland/setup-deno@v1.1.1
+        with:
+          deno-version: v1.x
+      - run: deno test
