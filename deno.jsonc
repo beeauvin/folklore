@@ -1,4 +1,7 @@
 {
+  "imports": {
+    "std/": "https://deno.land/std@0.187.0/"
+  },
   "lint": {
     "exclude": ["node_modules", "dist"]
   },
