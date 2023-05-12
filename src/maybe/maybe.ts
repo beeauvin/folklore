@@ -31,14 +31,14 @@ export class Maybe<T> {
   public getOrElse(defaultValue: T): T {
     return this.match(
       (value) => value,
-      () => defaultValue
+      () => defaultValue,
     )
   }
 
   public getOrDo(action: () => T): T {
     return this.match(
       (value) => value,
-      () => action()
+      () => action(),
     )
   }
 
@@ -47,7 +47,7 @@ export class Maybe<T> {
       (value) => value,
       () => {
         throw new Error('tried to get a maybe value that was null')
-      }
+      },
     )
   }
 

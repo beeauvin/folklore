@@ -57,8 +57,8 @@ describe('Result', () => {
       expect(
         value.match(
           (value) => value,
-          () => 0
-        )
+          () => 0,
+        ),
       ).toBe(1)
     })
 
@@ -67,8 +67,8 @@ describe('Result', () => {
       expect(
         value.match(
           (value) => value,
-          () => 0
-        )
+          () => 0,
+        ),
       ).toBe(0)
     })
   })

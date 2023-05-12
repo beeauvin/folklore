@@ -27,14 +27,14 @@ export class Result<T, E = string | Error> {
   public getOrElse(defaultValue: T): T {
     return this.match(
       (value) => value,
-      () => defaultValue
+      () => defaultValue,
     )
   }
 
   public getOrDo(action: () => T): T {
     return this.match(
       (value) => value,
-      () => action()
+      () => action(),
     )
   }
 

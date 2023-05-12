@@ -1,5 +1,10 @@
 {
   "lint": {
     "exclude": ["node_modules", "dist"]
+  },
+  "fmt": {
+    "lineWidth": 120,
+    "singleQuote": true,
+    "semiColons": false
   }
 }
