@@ -1,19 +1,12 @@
-# dependencies
-node_modules
-
 # testing
 coverage
 
 # build
-dist
+.dist
 
 # misc
 .DS_Store
 *.pem
 
-# debug
-npm-debug.log*
-
 # env
 .env
-.env.local
