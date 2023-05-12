@@ -1,11 +1,17 @@
 {
+  "tasks": {
+    "package": "deno run -A .tasks/package.ts",
+    "package:release": "cd .dist && npm publish --access public"
+  },
   "imports": {
+    "dnt/": "https://deno.land/x/dnt@0.35.0/",
     "std/": "https://deno.land/std@0.187.0/"
   },
   "lint": {
-    "exclude": ["node_modules", "dist"]
+    "exclude": [".dist"]
   },
   "fmt": {
+    "exclude": [".dist"],
     "lineWidth": 120,
     "singleQuote": true,
     "semiColons": false
