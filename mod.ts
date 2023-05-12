@@ -4,6 +4,5 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-export { Future } from './future/future.ts'
 export { Maybe } from './maybe/maybe.ts'
 export { Result } from './result/result.ts'
