@@ -11,7 +11,10 @@ import { pkg } from '../package.ts'
 await emptyDir('./.dist')
 
 await build({
-  entryPoints: ['./mod.ts'],
+  entryPoints: ['./mod.ts', {
+    path: './unstable/unstable.ts',
+    name: 'unstable',
+  }],
   outDir: './.dist',
   test: false,
   esModule: true,
