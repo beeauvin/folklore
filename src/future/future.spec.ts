@@ -15,7 +15,7 @@ describe('Future', () => {
     })
 
     it('should return a future with the error', async () => {
-      const promise = new Promise<number>((resolve, reject) => {
+      const promise = new Promise<number>((_resolve, reject) => {
         reject(new Error('error'))
       })
       const future = Future.FromPromise(promise)
@@ -23,7 +23,7 @@ describe('Future', () => {
       expect((await future.result()).getOrElse(0)).toBe(0)
     })
 
-    it('should never throw an error', async () => {
+    it('should never throw an error', () => {
       const promise = new Promise(() => {
         throw new Error('error')
       })

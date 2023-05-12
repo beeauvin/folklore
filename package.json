@@ -22,8 +22,6 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:unit": "jest --coverage",
-    "lint": "sunbeams lint --fix",
-    "check:lint": "sunbeams lint",
     "format": "sunbeams format",
     "check:format": "sunbeams format --check",
     "prepack": "npm run build"
