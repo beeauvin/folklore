@@ -25,6 +25,21 @@ export class Maybe<Type> {
     else return pattern.Nothing()
   }
 
+  /**
+   * Gets the value of a maybe or throws an error if it's nothing.
+   * 
+   * @experimental may change or be removed in patch releases
+   * @see https://github.com/cassiecascade/folklore/issues/23
+   */
+  public getOrThrow(): Type {
+    return this.matchWith({
+      Just: (value) => value,
+      Nothing: () => {
+        throw new Error('tried to get a maybe value that was nothing')
+      },
+    })
+  }
+
   public getOrElse(defaultValue: Just<Type>): Just<Type> {
     return this.matchWith({
       Just: (value) => value,
