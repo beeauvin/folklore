@@ -57,9 +57,9 @@ export class Maybe<Type> {
     return value instanceof Maybe
   }
 
-  public static FromNullable<Type>(value: Type): Maybe<Type> {
-    if (value != null) return Maybe.Just(value)
-    return Maybe.Nothing()
+  public static FromNullable<Type>(value: Type | Nothing): Maybe<Type> {
+    if (value == null) return Maybe.Nothing()
+    return Maybe.Just(value)
   }
 
   public static Just<Type>(value: Just<Type>): Maybe<Type> {
