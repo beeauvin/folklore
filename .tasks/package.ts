@@ -18,7 +18,7 @@ await build({
   outDir: './.dist',
   test: false,
   esModule: true,
-  scriptModule: false,
+  scriptModule: 'cjs',
   skipSourceOutput: true,
   declaration: 'inline',
   shims: {
