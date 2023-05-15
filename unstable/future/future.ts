@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import { Result } from '../../result/result.ts'
+import { Result } from '../result/result.ts'
 
 export class Future<T, E = Error> {
   private constructor(private readonly promise: Promise<Result<T, E>>) {}
