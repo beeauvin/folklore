@@ -33,7 +33,9 @@ export class Result<Type> {
     })
   }
 
-  public orElse<HandlerType>(handler: (value: Result<Type>) => Result<HandlerType>): Result<Type> | Result<HandlerType> {
+  public orElse<HandlerType>(
+    handler: (value: Result<Type>) => Result<HandlerType>,
+  ): Result<Type> | Result<HandlerType> {
     return this.matchWith({
       Ok: (value) => Result.Ok(value),
       Error: (error) => handler(Result.Error(error)),
@@ -43,14 +45,14 @@ export class Result<Type> {
   public merge(): Type | Err {
     return this.matchWith({
       Ok: (value) => value,
-      Error: (error) => error
+      Error: (error) => error,
     })
   }
 
   public mapError(error: Err): Result<Type> {
     return this.matchWith({
       Ok: (value) => Result.Ok(value),
-      Error: () => Result.Error(error)
+      Error: () => Result.Error(error),
     })
   }
 
@@ -73,13 +75,19 @@ export class Result<Type> {
   }
 
   public static Try<Type>(method: () => Ok<Type>): Result<Type> {
-    try { return Result.Ok(method()) }
-    catch (error) { return Result.Error(error) }
+    try {
+      return Result.Ok(method())
+    } catch (error) {
+      return Result.Error(error)
+    }
   }
 
   public static async FromPromise<Type>(promise: () => Promise<Ok<Type>>): Promise<Result<Type>> {
-    try { return Result.Ok(await promise()) }
-    catch (error) { return Result.Error(error) }
+    try {
+      return Result.Ok(await promise())
+    } catch (error) {
+      return Result.Error(error)
+    }
   }
 
   public static Ok<Type>(value: Ok<Type>): Result<Type> {
