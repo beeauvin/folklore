@@ -4,63 +4,69 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-export class Maybe<T> {
-  private constructor(private readonly value: T | undefined = undefined) {}
+export type Just<Type> = Type extends Nothing ? never : Type
+export type Nothing = null | undefined
+
+export class Maybe<Type> {
+  private constructor(private readonly value: Just<Type> | Nothing = undefined) {}
 
   public isJust(): boolean {
-    return this.value != null
+    return !this.isNothing()
   }
-
   public isNothing(): boolean {
     return this.value == null
   }
 
-  public match<U>(just: (value: T) => U, nothing: () => U): U {
-    if (this.isJust()) return just(this.value as T)
-    else return nothing()
+  public matchWith<JustReturnType, NothingReturnType>(pattern: {
+    Just: (value: Just<Type>) => JustReturnType
+    Nothing: () => NothingReturnType
+  }): JustReturnType | NothingReturnType {
+    if (this.isJust()) return pattern.Just(this.value!)
+    else return pattern.Nothing()
   }
 
-  public matchWith<U>(pattern: { just: (value: T) => U; nothing: () => U }): U {
-    return this.match(pattern.just, pattern.nothing)
+  public getOrElse(defaultValue: Just<Type>): Just<Type> {
+    return this.matchWith({
+      Just: (value) => value,
+      Nothing: () => defaultValue,
+    })
   }
 
-  public do(action: (value: T) => void): void {
-    if (this.isJust()) action(this.value as T)
+  public orElse<HandlerType>(handler: () => Maybe<HandlerType>): Maybe<Type> | Maybe<HandlerType> {
+    return this.matchWith({
+      Just: (value) => Maybe.Just(value),
+      Nothing: () => handler(),
+    })
   }
 
-  public getOrElse(defaultValue: T): T {
-    return this.match(
-      (value) => value,
-      () => defaultValue,
-    )
+  public map<HandlerType>(handler: (value: Type) => Just<HandlerType>): Maybe<HandlerType> {
+    return this.matchWith({
+      Just: (value) => Maybe.Just(handler(value)),
+      Nothing: () => Maybe.Nothing(),
+    })
   }
 
-  public getOrDo(action: () => T): T {
-    return this.match(
-      (value) => value,
-      () => action(),
-    )
+  public chain<HandlerType>(handler: (value: Type) => Maybe<HandlerType>): Maybe<HandlerType> {
+    return this.matchWith({
+      Just: (value) => handler(value),
+      Nothing: () => Maybe.Nothing(),
+    })
   }
 
-  public getOrThrow(): T {
-    return this.match(
-      (value) => value,
-      () => {
-        throw new Error('tried to get a maybe value that was null')
-      },
-    )
+  public static HasInstance<Type>(value: Type): boolean {
+    return value instanceof Maybe
   }
 
-  public static FromNullable<U>(value: U | null | undefined): Maybe<U> {
-    if (value == null) return Maybe.Nothing()
-    return Maybe.Just(value)
+  public static FromNullable<Type>(value: Type): Maybe<Type> {
+    if (value != null) return Maybe.Just(value)
+    return Maybe.Nothing()
   }
 
-  public static Just<T>(value: T): Maybe<typeof value> {
+  public static Just<Type>(value: Just<Type>): Maybe<Type> {
     return new Maybe(value)
   }
 
-  public static Nothing<T>(): Maybe<T> {
+  public static Nothing<Type>(): Maybe<Type> {
     return new Maybe()
   }
 }
