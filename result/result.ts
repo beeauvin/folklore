@@ -4,11 +4,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-export type Ok<Type> = Type extends Error ? never : Type
-export type Err = string | Error
+type ResultError = string | Error
 
 export class Result<Type> {
-  private constructor(private readonly value: Ok<Type>, private readonly error: Err) {}
+  private constructor(private readonly value: Type, private readonly error: ResultError) {}
 
   public isOk(): boolean {
     return this.value != null
@@ -19,14 +18,14 @@ export class Result<Type> {
   }
 
   public matchWith<OkReturnType, ErrorReturnType>(pattern: {
-    Ok: (value: Ok<Type>) => OkReturnType
-    Error: (error: Err) => ErrorReturnType
+    Ok: (value: Type) => OkReturnType
+    Error: (error: ResultError) => ErrorReturnType
   }): OkReturnType | ErrorReturnType {
-    if (this.isOk()) return pattern.Ok(this.value!)
+    if (this.isOk()) return pattern.Ok(this.value)
     else return pattern.Error(this.error)
   }
 
-  public getOrElse(defaultValue: Ok<Type>): Ok<Type> {
+  public getOrElse(defaultValue: Type): Type {
     return this.matchWith({
       Ok: (value) => value,
       Error: () => defaultValue,
@@ -42,21 +41,21 @@ export class Result<Type> {
     })
   }
 
-  public merge(): Type | Err {
+  public merge(): Type | ResultError {
     return this.matchWith({
       Ok: (value) => value,
       Error: (error) => error,
     })
   }
 
-  public mapError(error: Err): Result<Type> {
+  public mapError(error: ResultError): Result<Type> {
     return this.matchWith({
       Ok: (value) => Result.Ok(value),
       Error: () => Result.Error(error),
     })
   }
 
-  public map<HandlerType>(handler: (value: Type) => Ok<HandlerType>): Result<HandlerType> {
+  public map<HandlerType>(handler: (value: Type) => HandlerType): Result<HandlerType> {
     return this.matchWith({
       Ok: (value) => Result.Ok(handler(value)),
       Error: (error) => Result.Error(error),
@@ -74,7 +73,7 @@ export class Result<Type> {
     return value instanceof Result
   }
 
-  public static Try<Type>(method: () => Ok<Type>): Result<Type> {
+  public static Try<Type>(method: () => Type): Result<Type> {
     try {
       return Result.Ok(method())
     } catch (error) {
@@ -82,19 +81,19 @@ export class Result<Type> {
     }
   }
 
-  public static async FromPromise<Type>(promise: () => Promise<Ok<Type>>): Promise<Result<Type>> {
+  public static async FromPromise<Type>(promise: Promise<Type>): Promise<Result<Type>> {
     try {
-      return Result.Ok(await promise())
+      return Result.Ok(await promise)
     } catch (error) {
       return Result.Error(error)
     }
   }
 
-  public static Ok<Type>(value: Ok<Type>): Result<Type> {
+  public static Ok<Type>(value: Type): Result<Type> {
     return new Result<Type>(value, undefined as never)
   }
 
-  public static Error<Type>(error: Err): Result<Type> {
+  public static Error<Type>(error: ResultError): Result<Type> {
     return new Result<Type>(undefined as never, error)
   }
 }
