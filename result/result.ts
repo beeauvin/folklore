@@ -82,9 +82,9 @@ export class Result<Type> {
     }
   }
 
-  public static async FromPromise<Type>(promise: () => Promise<Ok<Type>>): Promise<Result<Type>> {
+  public static async FromPromise<Type>(promise: Promise<Type>): Promise<Result<Type>> {
     try {
-      return Result.Ok(await promise())
+      return Result.Ok(await promise)
     } catch (error) {
       return Result.Error(error)
     }
