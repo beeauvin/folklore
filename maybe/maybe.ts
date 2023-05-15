@@ -27,7 +27,7 @@ export class Maybe<Type> {
 
   /**
    * Gets the value of a maybe or throws an error if it's nothing.
-   * 
+   *
    * @experimental may change or be removed in patch releases
    * @see https://github.com/cassiecascade/folklore/issues/23
    */
