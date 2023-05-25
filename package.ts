@@ -6,7 +6,7 @@
 
 export const pkg = {
   name: 'folklore',
-  version: '0.2.0',
+  version: '0.2.1',
   description: 'a retelling of folktale, early, use at your own peril',
   author: 'Cassidy Spring <79487947+cassiecascade@users.noreply.github.com>',
   license: 'MPL-2.0',
