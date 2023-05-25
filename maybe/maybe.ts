@@ -31,11 +31,11 @@ export class Maybe<Type> {
    * @experimental may change or be removed in patch releases
    * @see https://github.com/cassiecascade/folklore/issues/23
    */
-  public getOrThrow(): Type {
+  public getOrThrow(error = 'tried to get a maybe value that was nothing'): Type {
     return this.matchWith({
       Just: (value) => value,
       Nothing: () => {
-        throw new Error('tried to get a maybe value that was nothing')
+        throw new Error(error)
       },
     })
   }
