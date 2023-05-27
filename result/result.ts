@@ -7,14 +7,18 @@
 type ResultError = string | Error
 
 export class Result<Type> {
-  private constructor(private readonly value: Type, private readonly error: ResultError) {}
+  private constructor(
+    private readonly success: boolean,
+    private readonly value: Type,
+    private readonly error: ResultError
+  ) {}
 
   public isOk(): boolean {
-    return this.value != null
+    return this.success
   }
 
   public isError(): boolean {
-    return this.error != null
+    return !this.isOk()
   }
 
   public matchWith<OkReturnType, ErrorReturnType>(pattern: {
@@ -90,10 +94,10 @@ export class Result<Type> {
   }
 
   public static Ok<Type>(value: Type): Result<Type> {
-    return new Result<Type>(value, undefined as never)
+    return new Result<Type>(true, value, undefined as never)
   }
 
   public static Error<Type>(error: ResultError): Result<Type> {
-    return new Result<Type>(undefined as never, error)
+    return new Result<Type>(false, undefined as never, error)
   }
 }
