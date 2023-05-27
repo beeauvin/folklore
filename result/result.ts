@@ -10,7 +10,7 @@ export class Result<Type> {
   private constructor(
     private readonly success: boolean,
     private readonly value: Type,
-    private readonly error: ResultError
+    private readonly error: ResultError,
   ) {}
 
   public isOk(): boolean {
