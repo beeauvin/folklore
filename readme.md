@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./media/folklore-image.jpg" width="100" alt="folklore logo" />
+  <img src="./media/folklore-image.png" width="100" alt="folklore logo" />
 </p>
 
 <p align="center">a re-telling of <a href="https://folktale.origamitower.com" target="_blank">folktale</a></p>
