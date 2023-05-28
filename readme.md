@@ -1,3 +1,24 @@
+<p align="center">
+  <img src="./media/folklore-image.jpg" width="100" alt="folklore logo" />
+</p>
+
+<p align="center">a re-telling of <a href="https://folktale.origamitower.com" target="_blank">folktale</a></p>
+<p align="center">early stages, use at your own peril</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/folklore" target="_blank"><img src="https://img.shields.io/npm/l/folklore.svg" alt="Package License" /></a>
+  <a href="https://www.npmjs.com/package/folklore" target="_blank"><img src="https://img.shields.io/npm/dm/folklore.svg" alt="NPM Downloads" /></a>
+  <a href="https://github.com/cassiecascade/folklore/actions/workflows/continuous-integration.yml" target="_blank">
+    <img src="https://github.com/cassiecascade/folklore/actions/workflows/continuous-integration.yml/badge.svg" alt="continuous integration" />
+  </a>
+  <a href="https://codecov.io/gh/cassiecascade/folklore" target="_blank">
+    <img src="https://codecov.io/gh/cassiecascade/folklore/branch/main/graph/badge.svg?token=19O67TDUG0"/>
+  </a>
+  <a href="https://codeclimate.com/github/cassiecascade/folklore/maintainability" target="_blank">
+    <img src="https://api.codeclimate.com/v1/badges/fba4e503042485778159/maintainability" />
+  </a>
+</p>
+
 # folklore
 
 a re-telling of [folktale](https://folktale.origamitower.com)
