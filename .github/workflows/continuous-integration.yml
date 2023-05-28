@@ -40,4 +40,22 @@ jobs:
       - uses: denoland/setup-deno@v1.1.2
         with:
           deno-version: v1.x
-      - run: deno test
+      - run: deno task coverage:report
+      - uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: coverage
+  
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage
+      - run: deno task coverage:report
+      - uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          flags: unittests
+          verbose: true
