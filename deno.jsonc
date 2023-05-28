@@ -1,7 +1,10 @@
 {
   "tasks": {
     "package": "deno run -A .tasks/package.ts",
-    "package:release": "cd .dist && npm publish --access public"
+    "package:release": "cd .dist && npm publish --access public",
+    "coverage": "deno test --coverage=coverage",
+    "coverage:check": "deno task coverage && deno coverage coverage",
+    "coverage:report": "deno task coverage && deno coverage coverage --lcov > coverage/lcov.info"
   },
   "imports": {
     "dnt/": "https://deno.land/x/dnt@0.35.0/",
