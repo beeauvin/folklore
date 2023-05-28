@@ -53,7 +53,6 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: coverage
-      - run: deno task coverage:report
       - uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
