@@ -4,7 +4,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-export * from './maybe/maybe.ts'
-export * from './result/result.ts'
-
-export type * from './utility/types.ts'
+/**
+ * Checks if some value is nothing (null | undefined).
+ *
+ * @param {Type} value any value
+ * @returns {boolean}
+ */
+export function is_nothing<Type>(value: Type): boolean {
+  return value == null
+}

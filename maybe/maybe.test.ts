@@ -4,10 +4,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import { Just, Maybe } from './maybe.ts'
 import { assertSpyCall, assertSpyCalls, Spy, spy } from 'std/testing/mock.ts'
 import { beforeEach, describe, it } from 'std/testing/bdd.ts'
 
+import { Maybe } from './maybe.ts'
 import { assertEquals } from 'std/testing/asserts.ts'
 
 describe('Maybe', () => {
