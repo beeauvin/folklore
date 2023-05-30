@@ -9,7 +9,7 @@ import { is_instance_of } from '../comparison/is-instance-of.ts'
 /**
  * Global base classes can be dangerous and encourage a style of polymorphism
  * that can get out of hand quickly. Use sparingly.
- * 
+ *
  * @private do not export or import this class.
  */
 export abstract class Base {
