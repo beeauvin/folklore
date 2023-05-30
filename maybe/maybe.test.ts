@@ -8,6 +8,7 @@ import { assertSpyCall, assertSpyCalls, Spy, spy } from 'std/testing/mock.ts'
 import { beforeEach, describe, it } from 'std/testing/bdd.ts'
 
 import { Maybe } from './maybe.ts'
+import { Base } from '../abstract/base.ts'
 import { assertEquals } from 'std/testing/asserts.ts'
 
 describe('Maybe', () => {
@@ -24,6 +25,12 @@ describe('Maybe', () => {
       return value
     })
     nothingHandlerSpy = spy(() => {})
+  })
+
+  it('should extend base', () => {
+    assertEquals(Maybe.prototype instanceof Base, true)
+    assertEquals(Base.HasInstance(Maybe.Just(1)), true)
+    assertEquals(Base.HasInstance(Maybe.Nothing()), true)
   })
 
   describe('isJust()', () => {

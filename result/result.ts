@@ -4,14 +4,18 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+import { Base } from '../abstract/base.ts'
+
 type ResultError = string | Error
 
-export class Result<Type> {
+export class Result<Type> extends Base {
   private constructor(
     private readonly success: boolean,
     private readonly value: Type,
     private readonly error: ResultError,
-  ) {}
+  ) {
+    super()
+  }
 
   public isOk(): boolean {
     return this.success
@@ -71,10 +75,6 @@ export class Result<Type> {
       Ok: (value) => handler(value),
       Error: (error) => Result.Error(error),
     })
-  }
-
-  public static HasInstance<Type>(value: Type): boolean {
-    return value instanceof Result
   }
 
   public static Try<Type>(method: () => Type): Result<Type> {
