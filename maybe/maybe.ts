@@ -70,6 +70,10 @@ export class Maybe<Type> {
     })
   }
 
+  public static HasInstance<Type>(value: Type): boolean {
+    return value instanceof Maybe
+  }
+
   public static FromNullable<Type>(value: Nullable<Type>): Maybe<Type> {
     if (is_nothing(value)) return Maybe.Nothing()
     else return Maybe.Just(value!)
