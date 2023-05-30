@@ -8,7 +8,7 @@ import type { Nullable } from '../utility/types.ts'
 import { is_nothing } from '../comparison/is-nothing.ts'
 import { is_something } from '../comparison/is-something.ts'
 
-  private constructor(private readonly value: Nullable<Type> = undefined) {
+export class Maybe<Type> {
   private constructor(private readonly value: Nullable<Type> = undefined) {}
 
   public isJust(): boolean {
