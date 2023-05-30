@@ -4,12 +4,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+import { Base } from '../abstract/base.ts'
 import type { Nullable } from '../utility/types.ts'
 import { is_nothing } from '../comparison/is-nothing.ts'
 import { is_something } from '../comparison/is-something.ts'
 
-export class Maybe<Type> {
-  private constructor(private readonly value: Nullable<Type> = undefined) {}
+export class Maybe<Type> extends Base {
+  private constructor(private readonly value: Nullable<Type> = undefined) {
+    super()
+  }
 
   public isJust(): boolean {
     return is_something(this.value)
@@ -68,10 +71,6 @@ export class Maybe<Type> {
       Just: (value) => handler(value),
       Nothing: () => Maybe.Nothing(),
     })
-  }
-
-  public static HasInstance<Type>(value: Type): boolean {
-    return value instanceof Maybe
   }
 
   public static FromNullable<Type>(value: Nullable<Type>): Maybe<Type> {
