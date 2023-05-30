@@ -129,7 +129,7 @@ describe('Maybe', () => {
   describe('chain()', () => {
     it('should return the result of the handler if maybe is just (x)', () => {
       maybeJustWithValue.forEach((wrapped) => {
-        justHandlerSpy = spy(<T>(value: Just<T>) => {
+        justHandlerSpy = spy(<T>(value: NonNullable<T>) => {
           return Maybe.Just(value)
         })
         const { maybe, value } = wrapped
