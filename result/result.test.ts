@@ -15,4 +15,3 @@ Deno.test('Result', async (test) => {
     assertEquals(Base.HasInstance(Result.Error('')), true)
   })
 })
-
