@@ -4,10 +4,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import { Just, Maybe } from './maybe.ts'
 import { assertSpyCall, assertSpyCalls, Spy, spy } from 'std/testing/mock.ts'
 import { beforeEach, describe, it } from 'std/testing/bdd.ts'
 
+import { Maybe } from './maybe.ts'
 import { assertEquals } from 'std/testing/asserts.ts'
 
 describe('Maybe', () => {
@@ -129,7 +129,7 @@ describe('Maybe', () => {
   describe('chain()', () => {
     it('should return the result of the handler if maybe is just (x)', () => {
       maybeJustWithValue.forEach((wrapped) => {
-        justHandlerSpy = spy(<T>(value: Just<T>) => {
+        justHandlerSpy = spy(<T>(value: NonNullable<T>) => {
           return Maybe.Just(value)
         })
         const { maybe, value } = wrapped

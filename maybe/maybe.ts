@@ -4,21 +4,23 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-export type Just<Type> = Type extends Nothing ? never : Type
-export type Nothing = null | undefined
+import type { Nullable } from '../utility/types.ts'
+import { is_nothing } from '../comparison/is-nothing.ts'
+import { is_something } from '../comparison/is-something.ts'
 
 export class Maybe<Type> {
-  private constructor(private readonly value: Just<Type> | Nothing = undefined) {}
+  private constructor(private readonly value: Nullable<Type> = undefined) {}
 
   public isJust(): boolean {
-    return !this.isNothing()
+    return is_something(this.value)
   }
+
   public isNothing(): boolean {
-    return this.value == null
+    return is_nothing(this.value)
   }
 
   public matchWith<JustReturnType, NothingReturnType>(pattern: {
-    Just: (value: Just<Type>) => JustReturnType
+    Just: (value: NonNullable<Type>) => JustReturnType
     Nothing: () => NothingReturnType
   }): JustReturnType | NothingReturnType {
     if (this.isJust()) return pattern.Just(this.value!)
@@ -40,7 +42,7 @@ export class Maybe<Type> {
     })
   }
 
-  public getOrElse(defaultValue: Just<Type>): Just<Type> {
+  public getOrElse(defaultValue: NonNullable<Type>): NonNullable<Type> {
     return this.matchWith({
       Just: (value) => value,
       Nothing: () => defaultValue,
@@ -54,7 +56,7 @@ export class Maybe<Type> {
     })
   }
 
-  public map<HandlerType>(handler: (value: Type) => Just<HandlerType>): Maybe<HandlerType> {
+  public map<HandlerType>(handler: (value: Type) => NonNullable<HandlerType>): Maybe<HandlerType> {
     return this.matchWith({
       Just: (value) => Maybe.Just(handler(value)),
       Nothing: () => Maybe.Nothing(),
@@ -72,12 +74,12 @@ export class Maybe<Type> {
     return value instanceof Maybe
   }
 
-  public static FromNullable<Type>(value: Type | Nothing): Maybe<Type> {
-    if (value == null) return Maybe.Nothing()
-    return Maybe.Just(value)
+  public static FromNullable<Type>(value: Nullable<Type>): Maybe<Type> {
+    if (is_nothing(value)) return Maybe.Nothing()
+    else return Maybe.Just(value!)
   }
 
-  public static Just<Type>(value: Just<Type>): Maybe<Type> {
+  public static Just<Type>(value: NonNullable<Type>): Maybe<Type> {
     return new Maybe(value)
   }
 
