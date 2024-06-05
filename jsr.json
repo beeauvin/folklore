@@ -1,0 +1,5 @@
+{
+  "name": "@folklore/folklore",
+  "version": "0.2.2",
+  "exports": "./mod.ts"
+}
