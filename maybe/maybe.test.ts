@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import { assertSpyCall, assertSpyCalls, Spy, spy } from 'std/testing/mock.ts'
+import { assertSpyCall, assertSpyCalls, type Spy, spy } from 'std/testing/mock.ts'
 import { beforeEach, describe, it } from 'std/testing/bdd.ts'
 
 import { Maybe } from './maybe.ts'

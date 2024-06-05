@@ -1,4 +1,7 @@
 {
+  "name": "@folklore/folklore",
+  "version": "0.2.2",
+  "exports": "./mod.ts",
   "tasks": {
     "package": "deno run -A .tasks/package.ts",
     "package:release": "cd .dist && npm publish --access public",
