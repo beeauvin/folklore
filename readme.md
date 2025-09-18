@@ -11,8 +11,8 @@
   <a href="https://github.com/beeauvin/folklore/actions/workflows/continuous-integration.yml" target="_blank">
     <img src="https://github.com/beeauvin/folklore/actions/workflows/continuous-integration.yml/badge.svg" alt="continuous integration" />
   </a>
-  <a href="https://codecov.io/gh/beeauvin/folklore" > 
-    <img src="https://codecov.io/gh/beeauvin/folklore/graph/badge.svg?token=19O67TDUG0"/> 
+  <a href="https://codecov.io/gh/beeauvin/folklore" >
+    <img src="https://codecov.io/gh/beeauvin/folklore/graph/badge.svg?token=19O67TDUG0"/>
   </a>
 </p>
 
