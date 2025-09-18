@@ -4,9 +4,11 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+import * as jsr from './jsr.json' with { type: 'json' }
+
 export const pkg = {
   name: 'folklore',
-  version: '0.2.2',
+  version: jsr.default.version,
   description: 'a retelling of folktale, early, use at your own peril',
   author: 'Cassidy Spring <79487947+beeauvin@users.noreply.github.com>',
   license: 'MPL-2.0',
