@@ -8,14 +8,14 @@ export const pkg = {
   name: 'folklore',
   version: '0.2.2',
   description: 'a retelling of folktale, early, use at your own peril',
-  author: 'Cassidy Spring <79487947+cassiecascade@users.noreply.github.com>',
+  author: 'Cassidy Spring <79487947+beeauvin@users.noreply.github.com>',
   license: 'MPL-2.0',
-  homepage: 'https://github.com/cassiecascade/folklore#readme',
+  homepage: 'https://github.com/beeauvin/folklore#readme',
   repository: {
     'type': 'git',
-    'url': 'git+https://github.com/cassiecascade/folklore.git',
+    'url': 'git+https://github.com/beeauvin/folklore.git',
   },
   bugs: {
-    'url': 'https://github.com/cassiecascade/folklore/issues',
+    'url': 'https://github.com/beeauvin/folklore/issues',
   },
 }

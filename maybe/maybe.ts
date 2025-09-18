@@ -34,7 +34,7 @@ export class Maybe<Type> extends Base {
    * Gets the value of a maybe or throws an error if it's nothing.
    *
    * @experimental may change or be removed in patch releases
-   * @see https://github.com/cassiecascade/folklore/issues/23
+   * @see https://github.com/beeauvin/folklore/issues/23
    */
   public getOrThrow(error = 'tried to get a maybe value that was nothing'): Type {
     return this.matchWith({
