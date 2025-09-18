@@ -27,7 +27,7 @@ Currently `Maybe` and `Result` are implemented and reasonably stable. Still, min
 
 There are some differences from Folktale's API. As an example, hasInstance is a static method on both in pascal case:
 `HasInstance`. Check the source (or intellisense in your editor). See
-[#13: A Retelling, not a reimplementation](https://github.com/cassiecascade/folklore/issues/13) for more information
+[#13: A Retelling, not a reimplementation](https://github.com/beeauvin/folklore/issues/13) for more information
 about this.
 
 ## License

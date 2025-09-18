@@ -10,7 +10,7 @@ updates:
     schedule:
       interval: weekly
     assignees:
-      - cassiecascade
+      - beeauvin
 
   - package-ecosystem: npm
     open-pull-requests-limit: 10
@@ -19,4 +19,4 @@ updates:
     schedule:
       interval: weekly
     assignees:
-      - cassiecascade
+      - beeauvin
