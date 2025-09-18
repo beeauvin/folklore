@@ -6,7 +6,7 @@
 
 import { Maybe, Result } from './mod.ts'
 
-import { assertExists } from 'std/testing/asserts.ts'
+import { assertExists } from '@std/assert'
 
 Deno.test('module', () => {
   assertExists(Maybe)

@@ -6,7 +6,7 @@
 
 import { Result } from './result.ts'
 import { Base } from '../abstract/base.ts'
-import { assertEquals } from 'std/testing/asserts.ts'
+import { assertEquals } from '@std/assert'
 
 Deno.test('Result', async (test) => {
   await test.step('extends base', () => {

@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import { assertEquals } from 'std/testing/asserts.ts'
+import { assertEquals } from '@std/assert'
 import { is_instance_of } from './is-instance-of.ts'
 
 Deno.test('is_instance_of', async (test) => {

@@ -81,7 +81,7 @@ export class Result<Type> extends Base {
     try {
       return Result.Ok(method())
     } catch (error) {
-      return Result.Error(error)
+      return Result.Error(error instanceof Error ? error : String(error))
     }
   }
 
@@ -89,7 +89,7 @@ export class Result<Type> extends Base {
     try {
       return Result.Ok(await promise)
     } catch (error) {
-      return Result.Error(error)
+      return Result.Error(error instanceof Error ? error : String(error))
     }
   }
 
