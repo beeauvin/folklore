@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import { build, emptyDir } from 'dnt/mod.ts'
+import { build, emptyDir } from '@deno/dnt'
 
 import { pkg } from '../package.ts'
 
