@@ -5,9 +5,8 @@
 name: publish / jsr
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 jobs:
   publish:
