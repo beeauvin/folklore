@@ -8,6 +8,11 @@ import { Base } from '../abstract/base.ts'
 import type { Nullable } from '../utility/types.ts'
 import { is_nothing } from '../comparison/is-nothing.ts'
 import { is_something } from '../comparison/is-something.ts'
+import { get_or_else } from '../operators/get-or-else.ts'
+import { map_monad } from '../operators/map-monad.ts'
+import { chain_monad } from '../operators/chain-monad.ts'
+import { or_else_monad } from '../operators/or-else-monad.ts'
+import { match_with } from '../operators/match-with.ts'
 
 export class Maybe<Type> extends Base {
   private constructor(private readonly value: Nullable<Type> = undefined) {
@@ -26,8 +31,13 @@ export class Maybe<Type> extends Base {
     Just: (value: NonNullable<Type>) => JustReturnType
     Nothing: () => NothingReturnType
   }): JustReturnType | NothingReturnType {
-    if (this.isJust()) return pattern.Just(this.value!)
-    else return pattern.Nothing()
+    return match_with(
+      this.isJust(),
+      this.value!,
+      undefined,
+      pattern.Just,
+      pattern.Nothing,
+    )
   }
 
   /**
@@ -46,31 +56,37 @@ export class Maybe<Type> extends Base {
   }
 
   public getOrElse(defaultValue: NonNullable<Type>): NonNullable<Type> {
-    return this.matchWith({
-      Just: (value) => value,
-      Nothing: () => defaultValue,
-    })
+    return get_or_else(this.isJust(), this.value!, defaultValue)
   }
 
   public orElse<HandlerType>(handler: () => Maybe<HandlerType>): Maybe<Type> | Maybe<HandlerType> {
-    return this.matchWith({
-      Just: (value) => Maybe.Just(value),
-      Nothing: () => handler(),
-    })
+    return or_else_monad(
+      this.isJust(),
+      this.value!,
+      handler,
+      (value: NonNullable<Type>) => Maybe.Just(value),
+    ) as Maybe<Type> | Maybe<HandlerType>
   }
 
   public map<HandlerType>(handler: (value: Type) => NonNullable<HandlerType>): Maybe<HandlerType> {
-    return this.matchWith({
-      Just: (value) => Maybe.Just(handler(value)),
-      Nothing: () => Maybe.Nothing(),
-    })
+    return map_monad(
+      this.isJust(),
+      this.value!,
+      undefined,
+      handler,
+      (value: NonNullable<HandlerType>) => Maybe.Just(value),
+      () => Maybe.Nothing<HandlerType>(),
+    ) as Maybe<HandlerType>
   }
 
   public chain<HandlerType>(handler: (value: Type) => Maybe<HandlerType>): Maybe<HandlerType> {
-    return this.matchWith({
-      Just: (value) => handler(value),
-      Nothing: () => Maybe.Nothing(),
-    })
+    return chain_monad(
+      this.isJust(),
+      this.value!,
+      undefined,
+      handler,
+      () => Maybe.Nothing<HandlerType>(),
+    ) as Maybe<HandlerType>
   }
 
   public static FromNullable<Type>(value: Nullable<Type>): Maybe<Type> {

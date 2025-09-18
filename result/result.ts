@@ -5,6 +5,10 @@
  */
 
 import { Base } from '../abstract/base.ts'
+import { get_or_else } from '../operators/get-or-else.ts'
+import { map_monad } from '../operators/map-monad.ts'
+import { chain_monad } from '../operators/chain-monad.ts'
+import { match_with } from '../operators/match-with.ts'
 
 type ResultError = string | Error
 
@@ -29,15 +33,17 @@ export class Result<Type> extends Base {
     Ok: (value: Type) => OkReturnType
     Error: (error: ResultError) => ErrorReturnType
   }): OkReturnType | ErrorReturnType {
-    if (this.isOk()) return pattern.Ok(this.value)
-    else return pattern.Error(this.error)
+    return match_with(
+      this.isOk(),
+      this.value,
+      this.error,
+      pattern.Ok,
+      pattern.Error,
+    )
   }
 
   public getOrElse(defaultValue: Type): Type {
-    return this.matchWith({
-      Ok: (value) => value,
-      Error: () => defaultValue,
-    })
+    return get_or_else(this.isOk(), this.value, defaultValue)
   }
 
   public orElse<HandlerType>(
@@ -64,17 +70,24 @@ export class Result<Type> extends Base {
   }
 
   public map<HandlerType>(handler: (value: Type) => HandlerType): Result<HandlerType> {
-    return this.matchWith({
-      Ok: (value) => Result.Ok(handler(value)),
-      Error: (error) => Result.Error(error),
-    })
+    return map_monad(
+      this.isOk(),
+      this.value,
+      this.error,
+      handler,
+      (value: HandlerType) => Result.Ok(value),
+      (error: ResultError) => Result.Error<HandlerType>(error),
+    ) as Result<HandlerType>
   }
 
   public chain<HandlerType>(handler: (value: Type) => Result<HandlerType>): Result<HandlerType> {
-    return this.matchWith({
-      Ok: (value) => handler(value),
-      Error: (error) => Result.Error(error),
-    })
+    return chain_monad(
+      this.isOk(),
+      this.value,
+      this.error,
+      handler,
+      (error: ResultError) => Result.Error<HandlerType>(error),
+    ) as Result<HandlerType>
   }
 
   public static Try<Type>(method: () => Type): Result<Type> {
