@@ -4,12 +4,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import { assertSpyCall, assertSpyCalls, type Spy, spy } from 'std/testing/mock.ts'
-import { beforeEach, describe, it } from 'std/testing/bdd.ts'
+import { assertSpyCall, assertSpyCalls, type Spy, spy } from '@std/testing/mock'
+import { beforeEach, describe, it } from '@std/testing/bdd'
 
 import { Maybe } from './maybe.ts'
 import { Base } from '../abstract/base.ts'
-import { assertEquals } from 'std/testing/asserts.ts'
+import { assertEquals } from '@std/assert'
 
 describe('Maybe', () => {
   const maybeConditionals = [1, '1', [1, 2, 3], { a: 1 }, () => 1]

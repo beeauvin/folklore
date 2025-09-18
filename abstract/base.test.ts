@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import { assertEquals } from 'std/testing/asserts.ts'
+import { assertEquals } from '@std/assert'
 import { Base } from './base.ts'
 
 Deno.test('Base', async (test) => {
