@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import * as jsr from './jsr.json' with { type: "json" }
+import * as jsr from './jsr.json' with { type: 'json' }
 
 export const pkg = {
   name: 'folklore',
