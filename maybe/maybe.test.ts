@@ -8,7 +8,7 @@ import { assertSpyCall, assertSpyCalls, type Spy, spy } from '@std/testing/mock'
 import { beforeEach, describe, it } from '@std/testing/bdd'
 
 import { Maybe } from './maybe.ts'
-import { assertEquals } from '@std/assert'
+import { assertEquals, assertThrows } from '@std/assert'
 
 describe('Maybe', () => {
   const maybeConditionals = [1, '1', [1, 2, 3], { a: 1 }, () => 1]
@@ -151,6 +151,31 @@ describe('Maybe', () => {
         assertEquals(result.getOrElse(0), 0)
         assertSpyCalls(justHandlerSpy, 0)
       })
+    })
+  })
+
+  describe('getOrThrow()', () => {
+    it('should return value if Just', () => {
+      maybeJustWithValue.forEach((wrapped) => {
+        const { maybe, value } = wrapped
+        assertEquals(maybe.getOrThrow(), value)
+      })
+    })
+
+    it('should throw if Nothing with default message', () => {
+      assertThrows(
+        () => Maybe.Nothing<number>().getOrThrow(),
+        Error,
+        'tried to get a maybe value that was nothing',
+      )
+    })
+
+    it('should throw if Nothing with custom message', () => {
+      assertThrows(
+        () => Maybe.Nothing<number>().getOrThrow('custom error'),
+        Error,
+        'custom error',
+      )
     })
   })
 
