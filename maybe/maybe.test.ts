@@ -26,7 +26,6 @@ describe('Maybe', () => {
     nothingHandlerSpy = spy(() => {})
   })
 
-
   describe('isJust()', () => {
     it('should return true if maybe is just (x)', () => {
       maybeJust.forEach((maybe) => assertEquals(maybe.isJust(), true))
