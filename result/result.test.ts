@@ -5,7 +5,7 @@
  */
 
 import { Result } from './result.ts'
-import { assertEquals, assertThrows } from '@std/assert'
+import { assertEquals } from '@std/assert'
 
 Deno.test('Result', async (t) => {
   await t.step('isOk()', async (t) => {
@@ -161,7 +161,7 @@ Deno.test('Result', async (t) => {
     })
 
     await t.step('should propagate errors from handler', () => {
-      const result = Result.Ok(5).chain((x) => Result.Error<number>('handler error'))
+      const result = Result.Ok(5).chain((_x) => Result.Error<number>('handler error'))
       assertEquals(result.isError(), true)
       assertEquals(result.merge(), 'handler error')
     })
