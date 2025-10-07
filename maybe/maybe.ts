@@ -4,19 +4,21 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import { Base } from '../abstract/base.ts'
 import type { Nullable } from '../utility/types.ts'
 import { is_nothing } from '../comparison/is-nothing.ts'
 import { is_something } from '../comparison/is-something.ts'
+import { is_instance_of } from '../comparison/is-instance-of.ts'
 import { get_or_else } from '../operators/get-or-else.ts'
 import { map_monad } from '../operators/map-monad.ts'
 import { chain_monad } from '../operators/chain-monad.ts'
 import { or_else_monad } from '../operators/or-else-monad.ts'
 import { match_with } from '../operators/match-with.ts'
 
-export class Maybe<Type> extends Base {
-  private constructor(private readonly value: Nullable<Type> = undefined) {
-    super()
+export class Maybe<Type> {
+  private constructor(private readonly value: Nullable<Type> = undefined) {}
+
+  public static HasInstance<Type>(value: unknown): value is Maybe<Type> {
+    return is_instance_of(Maybe, value)
   }
 
   public isJust(): boolean {

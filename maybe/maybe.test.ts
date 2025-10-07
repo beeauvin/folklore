@@ -8,7 +8,6 @@ import { assertSpyCall, assertSpyCalls, type Spy, spy } from '@std/testing/mock'
 import { beforeEach, describe, it } from '@std/testing/bdd'
 
 import { Maybe } from './maybe.ts'
-import { Base } from '../abstract/base.ts'
 import { assertEquals } from '@std/assert'
 
 describe('Maybe', () => {
@@ -25,12 +24,6 @@ describe('Maybe', () => {
       return value
     })
     nothingHandlerSpy = spy(() => {})
-  })
-
-  it('should extend base', () => {
-    assertEquals(Maybe.prototype instanceof Base, true)
-    assertEquals(Base.HasInstance(Maybe.Just(1)), true)
-    assertEquals(Base.HasInstance(Maybe.Nothing()), true)
   })
 
   describe('isJust()', () => {
@@ -162,16 +155,23 @@ describe('Maybe', () => {
   })
 
   describe('HasInstance()', () => {
-    it('should return true if value is an instance of Maybe and falso otherwise', () => {
+    it('should return true if value is an instance of Maybe', () => {
       maybeJustWithValue.forEach((wrapped) => {
-        const { maybe, value } = wrapped
+        const { maybe } = wrapped
         assertEquals(Maybe.HasInstance(maybe), true)
-        assertEquals(Maybe.HasInstance(value), false)
       })
 
       maybeNothing.forEach((maybe) => {
         assertEquals(Maybe.HasInstance(maybe), true)
       })
+    })
+
+    it('should return false if value is not an instance of Maybe', () => {
+      assertEquals(Maybe.HasInstance(5), false)
+      assertEquals(Maybe.HasInstance(null), false)
+      assertEquals(Maybe.HasInstance(undefined), false)
+      assertEquals(Maybe.HasInstance({}), false)
+      assertEquals(Maybe.HasInstance('string'), false)
     })
   })
 

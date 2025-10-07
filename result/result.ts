@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import { Base } from '../abstract/base.ts'
+import { is_instance_of } from '../comparison/is-instance-of.ts'
 import { get_or_else } from '../operators/get-or-else.ts'
 import { map_monad } from '../operators/map-monad.ts'
 import { chain_monad } from '../operators/chain-monad.ts'
@@ -12,13 +12,15 @@ import { match_with } from '../operators/match-with.ts'
 
 type ResultError = string | Error
 
-export class Result<Type> extends Base {
+export class Result<Type> {
   private constructor(
     private readonly success: boolean,
     private readonly value: Type,
     private readonly error: ResultError,
-  ) {
-    super()
+  ) {}
+
+  public static HasInstance<Type>(value: unknown): value is Result<Type> {
+    return is_instance_of(Result, value)
   }
 
   public isOk(): boolean {
