@@ -4,8 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import { is_instance_of } from '../comparison/is-instance-of.ts'
-
 type ResultError = string | Error
 
 export class Result<Type> {
@@ -16,7 +14,7 @@ export class Result<Type> {
   ) {}
 
   public static HasInstance<Type>(value: unknown): value is Result<Type> {
-    return is_instance_of(Result, value)
+    return value instanceof Result
   }
 
   public isOk(): boolean {
