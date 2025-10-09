@@ -95,8 +95,8 @@ export class Result<Type> {
     }
   }
 
-  public static Ok<Type>(value: Type): Result<Type> {
-    return new Result<Type>(true, value, undefined as never)
+  public static Ok<Type = void>(value?: Type): Result<Type> {
+    return new Result<Type>(true, value as Type, undefined as never)
   }
 
   public static Error<Type>(error: ResultError): Result<Type> {

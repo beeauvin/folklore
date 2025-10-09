@@ -235,4 +235,37 @@ Deno.test('Result', async (t) => {
       assertEquals(Result.HasInstance('string'), false)
     })
   })
+
+  await t.step('Ok() without value parameter', async (t) => {
+    await t.step('should create Ok with void type when no value provided', () => {
+      const result = Result.Ok()
+      assertEquals(result.isOk(), true)
+    })
+
+    await t.step('should work in void operation scenarios', () => {
+      // Simulating a save operation that returns Result<void>
+      const saveData = (): Result<void> => {
+        // Do some save operation
+        return Result.Ok()
+      }
+
+      const result = saveData()
+      assertEquals(result.isOk(), true)
+    })
+
+    await t.step('should still work with explicit values', () => {
+      const result = Result.Ok(42)
+      assertEquals(result.isOk(), true)
+      assertEquals(result.getOrElse(0), 42)
+    })
+
+    await t.step('should work with matchWith for void Results', () => {
+      const result = Result.Ok()
+      const matched = result.matchWith({
+        Ok: () => 'success',
+        Error: () => 'failure',
+      })
+      assertEquals(matched, 'success')
+    })
+  })
 })
