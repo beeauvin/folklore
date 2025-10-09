@@ -5,23 +5,20 @@
  */
 
 import type { Nullable } from '../utility/types.ts'
-import { is_nothing } from '../comparison/is-nothing.ts'
-import { is_something } from '../comparison/is-something.ts'
-import { is_instance_of } from '../comparison/is-instance-of.ts'
 
 export class Maybe<Type> {
   private constructor(private readonly value: Nullable<Type> = undefined) {}
 
   public static HasInstance<Type>(value: unknown): value is Maybe<Type> {
-    return is_instance_of(Maybe, value)
+    return value instanceof Maybe
   }
 
   public isJust(): boolean {
-    return is_something(this.value)
+    return this.value != null
   }
 
   public isNothing(): boolean {
-    return is_nothing(this.value)
+    return this.value == null
   }
 
   public matchWith<JustReturnType, NothingReturnType>(pattern: {
@@ -79,7 +76,7 @@ export class Maybe<Type> {
   }
 
   public static FromNullable<Type>(value: Nullable<Type>): Maybe<Type> {
-    if (is_nothing(value)) return Maybe.Nothing()
+    if (value == null) return Maybe.Nothing()
     else return Maybe.Just(value!)
   }
 
