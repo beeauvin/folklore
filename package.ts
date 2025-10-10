@@ -9,8 +9,8 @@ import * as jsr from './jsr.json' with { type: 'json' }
 export const pkg = {
   name: 'folklore',
   version: jsr.default.version,
-  description: 'a retelling of folktale, early, use at your own peril',
-  author: 'Cassidy Spring <79487947+beeauvin@users.noreply.github.com>',
+  description: 'A small, focused TypeScript library for safer code through functional patterns. Inspired by folktale.',
+  author: 'Cassidy Spring (Bee) <79487947+beeauvin@users.noreply.github.com>',
   license: 'MPL-2.0',
   homepage: 'https://github.com/beeauvin/folklore#readme',
   repository: {
