@@ -12,8 +12,8 @@ import type { Nullable } from '../utility/types.ts'
  * Maybe is a type-safe way to handle nullable values without using null or undefined
  * directly. A Maybe is either Just (contains a value) or Nothing (empty).
  *
- * This pattern eliminates null pointer errors by forcing you to explicitly handle
- * the absence of a value at compile time.
+ * This pattern eliminates null errors by forcing you to explicitly handle the
+ * absence of a value at compile time.
  *
  * @typeParam Type - The type of the value when it exists (Just case)
  *
