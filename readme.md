@@ -1,20 +1,23 @@
 <p align="center">
-  <img src="./.media/folklore-image-cropped.png" width="100" alt="folklore logo" />
+  <img src="./.media/folklore.png" width="100" alt="folklore logo" />
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/folklore" target="_blank"><img src="https://img.shields.io/npm/l/folklore.svg" alt="Package License" /></a>
-  <a href="https://www.npmjs.com/package/folklore" target="_blank"><img src="https://img.shields.io/npm/dm/folklore.svg" alt="NPM Downloads" /></a>
-  <a href="https://github.com/beeauvin/folklore/actions/workflows/continuous-integration.yml" target="_blank"><img src="https://github.com/beeauvin/folklore/actions/workflows/continuous-integration.yml/badge.svg" alt="continuous integration" /></a>
+  A small, focused TypeScript library for safer code through functional patterns. Inspired by <a href="https://folktale.origamitower.com">folktale</a>,
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/folklore"><img src="https://img.shields.io/npm/l/folklore.svg" alt="Package License" /></a>
+  <a href="https://jsr.io/@folklore/folklore"><img src="https://jsr.io/badges/@folklore/folklore" alt="JSR Version" /></a>
+  <a href="https://www.npmjs.com/package/folklore"><img src="https://img.shields.io/npm/dm/folklore.svg" alt="NPM Downloads" /></a>
+  <a href="https://github.com/beeauvin/folklore/actions/workflows/continuous-integration.yml"><img src="https://github.com/beeauvin/folklore/actions/workflows/continuous-integration.yml/badge.svg" alt="continuous integration" /></a>
   <a href="https://codecov.io/gh/beeauvin/folklore"><img src="https://codecov.io/gh/beeauvin/folklore/graph/badge.svg?token=19O67TDUG0"/></a>
 </p>
 
 # folklore
 
-A small, focused TypeScript library for safer code through functional patterns.
-
 Folklore provides two essential types for writing more reliable TypeScript: `Maybe` for handling optional values and
-`Result` for managing errors without exceptions. Inspired by [folktale](https://folktale.origamitower.com),
+`Result` for managing errors without exceptions.
 
 ## Installation
 
@@ -22,7 +25,7 @@ Folklore provides two essential types for writing more reliable TypeScript: `May
 
 ```bash
 # Deno
-deno add @folklore/folklore
+deno add jsr:@folklore/folklore
 
 # npm (via JSR)
 npx jsr add @folklore/folklore
