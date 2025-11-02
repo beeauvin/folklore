@@ -4,7 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-export * from "./src/ts/maybe.ts";
-export * from "./src/ts/result.ts";
+import { prepareGleamRuntime } from "./gleam.ts";
 
-export type * from "./utility/types.ts";
+if (import.meta.main) {
+  await prepareGleamRuntime();
+}

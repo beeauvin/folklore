@@ -3,6 +3,8 @@ coverage
 
 # build
 .dist
+gleam/build/
+runtime/
 
 # misc
 .DS_Store
