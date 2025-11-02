@@ -20,11 +20,11 @@ async function runCommand(executable: string, args: string[], cwd: string) {
 export async function buildGleam(
   target: "javascript" | "erlang" = "javascript",
 ) {
-  await runCommand("gleam", ["build", "--target", target], "gleam");
+  await runCommand("gleam", ["build", "--target", target], ".");
 }
 
 const RUNTIME_DIR = "runtime";
-const BUILD_OUTPUT = join("gleam", "build", "dev", "javascript");
+const BUILD_OUTPUT = join("build", "dev", "javascript");
 const FOLKLORE_DIR = "folklore_gleam";
 const FOLKLORE_SOURCE = join(BUILD_OUTPUT, FOLKLORE_DIR);
 const STD_SOURCE = join(BUILD_OUTPUT, "gleam_stdlib");

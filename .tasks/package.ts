@@ -41,7 +41,6 @@ async function buildJsrBundle() {
   await copyRuntimeArtifacts(JSR_OUT)
   await copyTree('mod.ts', join(JSR_OUT, 'mod.ts'))
   await copyTree('src/ts', join(JSR_OUT, 'src/ts'))
-  await copyTree('utility', join(JSR_OUT, 'utility'))
   await copyTree('readme.md', join(JSR_OUT, 'readme.md'))
   await copyTree('license.md', join(JSR_OUT, 'license.md'))
   await copyTree('jsr.json', join(JSR_OUT, 'jsr.json'))

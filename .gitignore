@@ -3,7 +3,7 @@ coverage
 
 # build
 .dist
-gleam/build/
+build/
 runtime/
 
 # misc

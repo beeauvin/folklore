@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import type { Nullable } from '../../utility/types.ts'
+import type { Nullable } from './utility/types.ts'
 import * as gleamMaybe from '../../runtime/folklore_gleam/folklore/maybe.mjs'
 
 /**

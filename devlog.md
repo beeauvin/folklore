@@ -9,11 +9,12 @@
 - **Validation**: Confirmed `deno task gleam:build`, `deno test`, and `deno task package` all succeed with the new layout.
 
 ### Outstanding / Next
-- Automate `deno task gleam:build` in CI or a git hook so `core/` cannot drift from `gleam/src`.
+- Automate `deno task gleam:build` in CI or a git hook so `runtime/` cannot drift from `src/folklore`.
 - Begin exploring the future Task type/API redesign once the Gleam-backed foundation proves stable.
 
 ### 2024-04-08
-- **Source Layout**: Moved TypeScript wrappers to `src/ts/` and updated tests/mod exports to reference the new location.
-- **Runtime Staging**: Replaced the committed `core/` directory with an ignored `runtime/` folder produced by `deno task gleam:build`; wrappers now import from this staged path.
+- **Source Layout**: Moved TypeScript wrappers to `src/ts/` and flattened Gleam sources into `src/folklore/` at the project root; updated tests/mod exports to reference the new paths.
+- **Runtime Staging**: Replaced the committed `core/` directory with an ignored `runtime/` folder produced by `deno task gleam:build`; wrappers now import from this staged path and build tooling reads/writes Gleam output in root-level `build/`.
 - **Packaging**: Reworked `.tasks/package.ts` to emit separate `.dist/npm` (DNT) and `.dist/jsr` bundles, each seeded with the staged runtime and necessary sources/docs.
 - **Build Scripts**: Updated helper tasks (`gleam:build`, `package`) and ignore rules to match the new workflow.
+- **Testing**: Relocated Maybe/Result specs alongside their implementations in `src/ts/` and configured `deno test` to ignore generated build/runtime output.

@@ -1,6 +1,6 @@
 ## Project Snapshot
 - **Goal**: Keep the public `Maybe`/`Result` API stable while moving all implementation logic into Gleam and shipping clean bundles for Deno (JSR) and npm.
-- **Current State**: Gleam code lives in `./gleam`; a build task stages the compiled JS + typings into `runtime/` (git-ignored). TypeScript wrappers inside `src/ts/` delegate to that runtime and are copied into `.dist/jsr` and `.dist/npm` during packaging.
+- **Current State**: Gleam code lives under `src/folklore/`; a build task stages the compiled JS + typings into `runtime/` (git-ignored). TypeScript wrappers inside `src/ts/` delegate to that runtime and are copied into `.dist/jsr` and `.dist/npm` during packaging.
 - **Key Guarantees**: Backwards-compatible TypeScript surface (JSDoc + behaviour), no runtime rebuilds required for consumers, and consistent outputs across package managers.
 
 ## Build & Verification
@@ -9,9 +9,9 @@
 3. `deno task package` – creates `.dist/npm` via DNT and `.dist/jsr` via direct copies, injecting the staged runtime into each.
 
 ## File Map & Responsibilities
-- `gleam/src/folklore/*.gleam` – canonical Maybe/Result logic.
+- `src/folklore/*.gleam` – canonical Maybe/Result Gleam modules.
 - `runtime/` – generated Gleam JS + `.d.mts` declarations (rebuilt, not committed).
-- `src/ts/*.ts` – checked-in TypeScript wrappers that import from `../../runtime/...`.
+- `src/ts/*.ts` & `src/ts/*.test.ts` – checked-in TypeScript wrappers and tests that import from `../../runtime/...`.
 - `maybe/*.test.ts`, `result/*.test.ts` – Deno tests importing wrappers from `src/ts`.
 - `.tasks/gleam.ts` – helper utilities to build Gleam and stage runtime artifacts.
 - `.tasks/package.ts` – orchestrates npm/JSR bundles (`.dist/npm`, `.dist/jsr`).

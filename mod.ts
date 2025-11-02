@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-export * from "./src/ts/maybe.ts";
-export * from "./src/ts/result.ts";
+export * from './src/ts/maybe.ts'
+export * from './src/ts/result.ts'
 
-export type * from "./utility/types.ts";
+export type * from './src/ts/utility/types.ts'
