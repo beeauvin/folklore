@@ -53,12 +53,6 @@ import * as gleamOption from '../runtime/folklore/folklore/option.mjs'
 export class Maybe<Type> {
   private constructor(private readonly inner: unknown) {}
 
-  private unwrapOrThrow(message: string): NonNullable<Type> {
-    return gleamOption.unwrap_with(this.inner as never, (): never => {
-      throw new Error(message)
-    }) as NonNullable<Type>
-  }
-
   /**
    * Type guard to check if a value is a Maybe instance.
    *
@@ -155,14 +149,11 @@ export class Maybe<Type> {
     Just: (value: NonNullable<Type>) => JustReturnType
     Nothing: () => NothingReturnType
   }): JustReturnType | NothingReturnType {
-    if (this.isJust()) {
-      const value = this.unwrapOrThrow(
-        'Attempted to match Nothing without a fallback',
-      )
-      return pattern.Just(value)
-    } else {
-      return pattern.Nothing()
-    }
+    return gleamOption.match_with(
+      this.inner as never,
+      pattern.Just as never,
+      pattern.Nothing,
+    ) as JustReturnType | NothingReturnType
   }
 
   /**
@@ -197,7 +188,9 @@ export class Maybe<Type> {
   public getOrThrow(
     error = 'tried to get a maybe value that was nothing',
   ): Type {
-    return this.unwrapOrThrow(error) as Type
+    return gleamOption.unwrap_with(this.inner as never, (): never => {
+      throw new Error(error)
+    }) as Type
   }
 
   /**
@@ -318,12 +311,9 @@ export class Maybe<Type> {
   public map<HandlerType>(
     handler: (value: Type) => NonNullable<HandlerType>,
   ): Maybe<HandlerType> {
-    if (this.isJust()) {
-      const value = this.unwrapOrThrow('Attempted to map a Nothing value')
-      return Maybe.Just(handler(value))
-    } else {
-      return Maybe.Nothing<HandlerType>()
-    }
+    return new Maybe<HandlerType>(
+      gleamOption.map(this.inner as never, handler as never),
+    )
   }
 
   /**
@@ -360,12 +350,9 @@ export class Maybe<Type> {
   public chain<HandlerType>(
     handler: (value: Type) => Maybe<HandlerType>,
   ): Maybe<HandlerType> {
-    if (this.isJust()) {
-      const value = this.unwrapOrThrow('Attempted to chain on a Nothing value')
-      return handler(value)
-    } else {
-      return Maybe.Nothing<HandlerType>()
-    }
+    return new Maybe<HandlerType>(
+      gleamOption.chain(this.inner as never, (value: Type) => handler(value).inner as never),
+    )
   }
 
   /**

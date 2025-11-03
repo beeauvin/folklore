@@ -56,3 +56,14 @@ pub fn unwrap_with(maybe: Option(a), fallback: fn() -> a) -> a {
     None -> fallback()
   }
 }
+
+pub fn match_with(
+  maybe: Option(a),
+  on_just: fn(a) -> b,
+  on_nothing: fn() -> b,
+) -> b {
+  case maybe {
+    Some(value) -> on_just(value)
+    None -> on_nothing()
+  }
+}

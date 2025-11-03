@@ -58,24 +58,6 @@ type ResultError = string | Error
 export class Result<Type> {
   private constructor(private readonly inner: unknown) {}
 
-  private unwrapOkOrThrow(): Type {
-    return gleamResult.unwrap_ok_with(
-      this.inner as never,
-      (_error: ResultError): never => {
-        throw new Error('Attempted to unwrap Ok value from an Error result')
-      },
-    ) as Type
-  }
-
-  private unwrapErrorOrThrow(): ResultError {
-    return gleamResult.unwrap_error_with(
-      this.inner as never,
-      (_value: Type): never => {
-        throw new Error('Attempted to unwrap Error value from an Ok result')
-      },
-    ) as ResultError
-  }
-
   /**
    * Type guard to check if a value is a Result instance.
    *
@@ -173,13 +155,11 @@ export class Result<Type> {
     Ok: (value: Type) => OkReturnType
     Error: (error: ResultError) => ErrorReturnType
   }): OkReturnType | ErrorReturnType {
-    if (this.isOk()) {
-      const value = this.unwrapOkOrThrow()
-      return pattern.Ok(value)
-    } else {
-      const error = this.unwrapErrorOrThrow()
-      return pattern.Error(error)
-    }
+    return gleamResult.match_with(
+      this.inner as never,
+      pattern.Ok as never,
+      pattern.Error as never,
+    ) as OkReturnType | ErrorReturnType
   }
 
   /**
@@ -244,10 +224,9 @@ export class Result<Type> {
   public orElse<HandlerType>(
     handler: (value: Result<Type>) => Result<HandlerType>,
   ): Result<Type> | Result<HandlerType> {
-    return this.matchWith({
-      Ok: (value) => Result.Ok(value),
-      Error: (error) => handler(Result.Error(error)),
-    })
+    return new Result(
+      gleamResult.or_else(this.inner as never, (error: ResultError) => handler(Result.Error(error)).inner as never),
+    ) as Result<Type> | Result<HandlerType>
   }
 
   /**
@@ -281,10 +260,7 @@ export class Result<Type> {
    * @see {@link matchWith} for handling value and error differently
    */
   public merge(): Type | ResultError {
-    return this.matchWith({
-      Ok: (value) => value,
-      Error: (error) => error,
-    })
+    return gleamResult.merge(this.inner as never) as Type | ResultError
   }
 
   /**
@@ -319,10 +295,9 @@ export class Result<Type> {
    * @see {@link chain} for error recovery with alternative Results
    */
   public mapError(error: ResultError): Result<Type> {
-    return this.matchWith({
-      Ok: (value) => Result.Ok(value),
-      Error: () => Result.Error(error),
-    })
+    return new Result<Type>(
+      gleamResult.map_error_replace(this.inner as never, error),
+    )
   }
 
   /**
@@ -359,13 +334,7 @@ export class Result<Type> {
   public map<HandlerType>(
     handler: (value: Type) => HandlerType,
   ): Result<HandlerType> {
-    if (this.isOk()) {
-      const value = this.unwrapOkOrThrow()
-      return Result.Ok(handler(value))
-    } else {
-      const error = this.unwrapErrorOrThrow()
-      return Result.Error<HandlerType>(error)
-    }
+    return new Result<HandlerType>(gleamResult.map(this.inner as never, handler as never))
   }
 
   /**
@@ -402,13 +371,9 @@ export class Result<Type> {
   public chain<HandlerType>(
     handler: (value: Type) => Result<HandlerType>,
   ): Result<HandlerType> {
-    if (this.isOk()) {
-      const value = this.unwrapOkOrThrow()
-      return handler(value)
-    } else {
-      const error = this.unwrapErrorOrThrow()
-      return Result.Error<HandlerType>(error)
-    }
+    return new Result<HandlerType>(
+      gleamResult.chain(this.inner as never, (value: Type) => handler(value).inner as never),
+    )
   }
 
   /**
