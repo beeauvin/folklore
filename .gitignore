@@ -3,6 +3,8 @@ coverage
 
 # build
 .dist
+build/
+runtime/
 
 # misc
 .DS_Store

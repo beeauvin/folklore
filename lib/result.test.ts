@@ -208,7 +208,9 @@ Deno.test('Result', async (t) => {
     })
 
     await t.step('should catch rejected promises', async () => {
-      const result = await Result.FromPromise(Promise.reject(new Error('oops')))
+      const result = await Result.FromPromise(
+        Promise.reject(new Error('oops')),
+      )
       assertEquals(result.isError(), true)
       const error = result.merge() as Error
       assertEquals(error.message, 'oops')
@@ -237,10 +239,13 @@ Deno.test('Result', async (t) => {
   })
 
   await t.step('Ok() without value parameter', async (t) => {
-    await t.step('should create Ok with void type when no value provided', () => {
-      const result = Result.Ok()
-      assertEquals(result.isOk(), true)
-    })
+    await t.step(
+      'should create Ok with void type when no value provided',
+      () => {
+        const result = Result.Ok()
+        assertEquals(result.isOk(), true)
+      },
+    )
 
     await t.step('should work in void operation scenarios', () => {
       // Simulating a save operation that returns Result<void>

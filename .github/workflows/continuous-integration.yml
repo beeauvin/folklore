@@ -46,9 +46,15 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v5
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: '27'
+          gleam-version: '1.13.0'
+          rebar3-version: '3'
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
+      - run: deno task gleam:build
       - run: deno task coverage:report
       - uses: codecov/codecov-action@v5
         env:
