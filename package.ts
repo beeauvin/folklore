@@ -12,7 +12,8 @@ const gleamToml = parse(await Deno.readTextFile('./gleam.toml')) as {
 }
 
 const version = gleamToml.version
-const description = 'A small, focused TypeScript library for safer code through functional patterns. Inspired by folktale.'
+const description =
+  'A small, focused TypeScript library for safer code through functional patterns. Inspired by folktale.'
 const author = 'Cassidy Spring (Bee) <79487947+beeauvin@users.noreply.github.com>'
 const license = 'MPL-2.0'
 const homepage = 'https://github.com/beeauvin/folklore#readme'

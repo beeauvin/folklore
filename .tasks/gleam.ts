@@ -4,19 +4,19 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import { join } from "@std/path";
+import { join } from '@std/path'
 
 /**
  * Runs the Gleam compiler with the specified target.
  */
 async function runGleam(args: string[]) {
-  const command = new Deno.Command("gleam", { args, cwd: "." });
-  const { success, stdout, stderr } = await command.output();
+  const command = new Deno.Command('gleam', { args, cwd: '.' })
+  const { success, stdout, stderr } = await command.output()
 
   if (!success) {
-    const decoder = new TextDecoder();
-    const message = decoder.decode(stderr) || decoder.decode(stdout);
-    throw new Error(message.trim() || `gleam ${args.join(" ")} failed`);
+    const decoder = new TextDecoder()
+    const message = decoder.decode(stderr) || decoder.decode(stdout)
+    throw new Error(message.trim() || `gleam ${args.join(' ')} failed`)
   }
 }
 
@@ -25,7 +25,7 @@ async function runGleam(args: string[]) {
  * This generates .mjs files and TypeScript declarations in build/dev/javascript.
  */
 export async function buildGleam() {
-  await runGleam(["build", "--target", "javascript"]);
+  await runGleam(['build', '--target', 'javascript'])
 }
 
 /**
@@ -33,10 +33,10 @@ export async function buildGleam() {
  */
 async function removeDir(path: string) {
   try {
-    await Deno.remove(path, { recursive: true });
+    await Deno.remove(path, { recursive: true })
   } catch (error) {
     if (!(error instanceof Deno.errors.NotFound)) {
-      throw error;
+      throw error
     }
   }
 }
@@ -45,16 +45,16 @@ async function removeDir(path: string) {
  * Recursively copies a directory.
  */
 async function copyDir(source: string, destination: string) {
-  await Deno.mkdir(destination, { recursive: true });
+  await Deno.mkdir(destination, { recursive: true })
 
   for await (const entry of Deno.readDir(source)) {
-    const from = join(source, entry.name);
-    const to = join(destination, entry.name);
+    const from = join(source, entry.name)
+    const to = join(destination, entry.name)
 
     if (entry.isDirectory) {
-      await copyDir(from, to);
+      await copyDir(from, to)
     } else if (entry.isFile) {
-      await Deno.copyFile(from, to);
+      await Deno.copyFile(from, to)
     }
   }
 }
@@ -65,21 +65,21 @@ async function copyDir(source: string, destination: string) {
  * that the TypeScript wrappers import.
  */
 export async function prepareGleamRuntime() {
-  const BUILD_OUTPUT = join("build", "dev", "javascript");
-  const RUNTIME_DIR = "runtime";
+  const BUILD_OUTPUT = join('build', 'dev', 'javascript')
+  const RUNTIME_DIR = 'runtime'
 
   // Build the Gleam project
-  await buildGleam();
+  await buildGleam()
 
   // Clean and recreate runtime directory
-  await removeDir(RUNTIME_DIR);
+  await removeDir(RUNTIME_DIR)
 
   // Copy the entire build output to runtime/
   // This includes:
   // - prelude.mjs and prelude.d.mts (Gleam's core types)
   // - gleam_stdlib/ (standard library)
   // - folklore/ (our compiled Gleam code)
-  await copyDir(BUILD_OUTPUT, RUNTIME_DIR);
+  await copyDir(BUILD_OUTPUT, RUNTIME_DIR)
 }
 
 /**
@@ -87,14 +87,14 @@ export async function prepareGleamRuntime() {
  * Used during packaging to include Gleam runtime in npm/JSR distributions.
  */
 export async function copyRuntimeArtifacts(outDir: string) {
-  const RUNTIME_DIR = "runtime";
-  const destination = join(outDir, "runtime");
+  const RUNTIME_DIR = 'runtime'
+  const destination = join(outDir, 'runtime')
 
-  await removeDir(destination);
-  await copyDir(RUNTIME_DIR, destination);
+  await removeDir(destination)
+  await copyDir(RUNTIME_DIR, destination)
 }
 
 // Run prepareGleamRuntime when this file is executed directly
 if (import.meta.main) {
-  await prepareGleamRuntime();
+  await prepareGleamRuntime()
 }
