@@ -7,7 +7,7 @@
 import { build, emptyDir } from '@deno/dnt'
 import { dirname, join } from '@std/path'
 
-import { pkg } from '../package.ts'
+import { jsrManifest, pkg } from '../package.ts'
 import { copyRuntimeArtifacts, prepareGleamRuntime } from './gleam.ts'
 
 const DIST_ROOT = '.dist'
@@ -18,7 +18,7 @@ await prepareGleamRuntime()
 await emptyDir(DIST_ROOT)
 
 await build({
-  entryPoints: ['./mod.ts'],
+  entryPoints: ['./lib/mod.ts'],
   outDir: NPM_OUT,
   test: false,
   esModule: true,
@@ -39,11 +39,10 @@ await buildJsrBundle()
 
 async function buildJsrBundle() {
   await copyRuntimeArtifacts(JSR_OUT)
-  await copyTree('mod.ts', join(JSR_OUT, 'mod.ts'))
-  await copyTree('src/ts', join(JSR_OUT, 'src/ts'))
+  await copyTree('lib', join(JSR_OUT, 'lib'))
   await copyTree('readme.md', join(JSR_OUT, 'readme.md'))
   await copyTree('license.md', join(JSR_OUT, 'license.md'))
-  await copyTree('jsr.json', join(JSR_OUT, 'jsr.json'))
+  await writeJsonFile(join(JSR_OUT, 'jsr.json'), jsrManifest)
 }
 
 async function copyStaticAssets(dest: string) {
@@ -58,6 +57,12 @@ async function copyStaticAssets(dest: string) {
       throw error
     }
   }
+}
+
+async function writeJsonFile(destination: string, data: unknown) {
+  await Deno.mkdir(dirname(destination), { recursive: true })
+  const contents = `${JSON.stringify(data, null, 2)}\n`
+  await Deno.writeTextFile(destination, contents)
 }
 
 async function copyTree(source: string, destination: string) {

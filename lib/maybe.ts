@@ -5,7 +5,7 @@
  */
 
 import type { Nullable } from './utility/types.ts'
-import * as gleamMaybe from '../../runtime/folklore_gleam/folklore/maybe.mjs'
+import * as gleamOption from '../runtime/folklore/folklore/option.mjs'
 
 /**
  * Represents an optional value that may or may not exist.
@@ -54,7 +54,7 @@ export class Maybe<Type> {
   private constructor(private readonly inner: unknown) {}
 
   private unwrapOrThrow(message: string): NonNullable<Type> {
-    return gleamMaybe.unwrap_with(this.inner as never, (): never => {
+    return gleamOption.unwrap_with(this.inner as never, (): never => {
       throw new Error(message)
     }) as NonNullable<Type>
   }
@@ -96,7 +96,7 @@ export class Maybe<Type> {
    * @see {@link matchWith} for handling both cases
    */
   public isJust(): boolean {
-    return Boolean(gleamMaybe.is_just(this.inner as never))
+    return Boolean(gleamOption.is_just(this.inner as never))
   }
 
   /**
@@ -116,7 +116,7 @@ export class Maybe<Type> {
    * @see {@link matchWith} for handling both cases
    */
   public isNothing(): boolean {
-    return Boolean(gleamMaybe.is_nothing(this.inner as never))
+    return Boolean(gleamOption.is_nothing(this.inner as never))
   }
 
   /**
@@ -233,7 +233,7 @@ export class Maybe<Type> {
    * @see {@link getOrThrow} to throw instead of using a default
    */
   public getOrElse(defaultValue: NonNullable<Type>): NonNullable<Type> {
-    return gleamMaybe.get_or_else(
+    return gleamOption.get_or_else(
       this.inner as never,
       defaultValue,
     ) as NonNullable<Type>
@@ -435,7 +435,7 @@ export class Maybe<Type> {
    * @see {@link FromNullable} for converting nullable values
    */
   public static Just<Type>(value: NonNullable<Type>): Maybe<Type> {
-    return new Maybe<Type>(gleamMaybe.just(value))
+    return new Maybe<Type>(gleamOption.just(value))
   }
 
   /**
@@ -464,6 +464,6 @@ export class Maybe<Type> {
    * @see {@link FromNullable} for converting nullable values
    */
   public static Nothing<Type>(): Maybe<Type> {
-    return new Maybe<Type>(gleamMaybe.nothing())
+    return new Maybe<Type>(gleamOption.nothing())
   }
 }

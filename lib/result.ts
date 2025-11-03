@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import * as gleamResult from '../../runtime/folklore_gleam/folklore/result.mjs'
+import * as gleamResult from '../runtime/folklore/folklore/result.mjs'
 
 /**
  * Valid error types for Result.
