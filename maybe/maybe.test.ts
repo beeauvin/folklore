@@ -13,15 +13,8 @@ import { assertEquals, assertThrows } from '@std/assert'
 describe('Maybe', () => {
   const maybeConditionals = [1, '1', [1, 2, 3], { a: 1 }, () => 1]
   const maybeJust = maybeConditionals.map(Maybe.Just)
-  const maybeJustWithValue = maybeConditionals.map((value) => ({
-    value,
-    maybe: Maybe.Just(value),
-  }))
-  const maybeNothing = [
-    Maybe.FromNullable(null),
-    Maybe.FromNullable(undefined),
-    Maybe.Nothing(),
-  ]
+  const maybeJustWithValue = maybeConditionals.map((value) => ({ value, maybe: Maybe.Just(value) }))
+  const maybeNothing = [Maybe.FromNullable(null), Maybe.FromNullable(undefined), Maybe.Nothing()]
 
   let justHandlerSpy: Spy
   let nothingHandlerSpy: Spy

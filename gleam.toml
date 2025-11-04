@@ -1,8 +1,0 @@
-name = "folklore"
-version = "0.3.1"
-
-[dependencies]
-gleam_stdlib = "~> 0.65"
-
-[javascript]
-runtime = "deno"

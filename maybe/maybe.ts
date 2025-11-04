@@ -4,8 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import type { Nullable } from './utility/types.ts'
-import * as gleamOption from '../runtime/folklore/folklore/option.mjs'
+import type { Nullable } from '../utility/types.ts'
 
 /**
  * Represents an optional value that may or may not exist.
@@ -51,7 +50,7 @@ import * as gleamOption from '../runtime/folklore/folklore/option.mjs'
  * ```
  */
 export class Maybe<Type> {
-  private constructor(private readonly inner: unknown) {}
+  private constructor(private readonly value: Nullable<Type> = undefined) {}
 
   /**
    * Type guard to check if a value is a Maybe instance.
@@ -90,7 +89,7 @@ export class Maybe<Type> {
    * @see {@link matchWith} for handling both cases
    */
   public isJust(): boolean {
-    return Boolean(gleamOption.is_just(this.inner as never))
+    return this.value != null
   }
 
   /**
@@ -110,7 +109,7 @@ export class Maybe<Type> {
    * @see {@link matchWith} for handling both cases
    */
   public isNothing(): boolean {
-    return Boolean(gleamOption.is_nothing(this.inner as never))
+    return this.value == null
   }
 
   /**
@@ -149,11 +148,11 @@ export class Maybe<Type> {
     Just: (value: NonNullable<Type>) => JustReturnType
     Nothing: () => NothingReturnType
   }): JustReturnType | NothingReturnType {
-    return gleamOption.match_with(
-      this.inner as never,
-      pattern.Just as never,
-      pattern.Nothing,
-    ) as JustReturnType | NothingReturnType
+    if (this.isJust()) {
+      return pattern.Just(this.value!)
+    } else {
+      return pattern.Nothing()
+    }
   }
 
   /**
@@ -185,12 +184,13 @@ export class Maybe<Type> {
    * @see {@link getOrElse} for a safer alternative with default values
    * @see {@link matchWith} for handling both cases without exceptions
    */
-  public getOrThrow(
-    error = 'tried to get a maybe value that was nothing',
-  ): Type {
-    return gleamOption.unwrap_with(this.inner as never, (): never => {
-      throw new Error(error)
-    }) as Type
+  public getOrThrow(error = 'tried to get a maybe value that was nothing'): Type {
+    return this.matchWith({
+      Just: (value) => value,
+      Nothing: () => {
+        throw new Error(error)
+      },
+    })
   }
 
   /**
@@ -226,10 +226,7 @@ export class Maybe<Type> {
    * @see {@link getOrThrow} to throw instead of using a default
    */
   public getOrElse(defaultValue: NonNullable<Type>): NonNullable<Type> {
-    return gleamOption.get_or_else(
-      this.inner as never,
-      defaultValue,
-    ) as NonNullable<Type>
+    return this.isJust() ? this.value! : defaultValue
   }
 
   /**
@@ -259,11 +256,9 @@ export class Maybe<Type> {
    * @see {@link getOrElse} for simple default values
    * @see {@link chain} for chaining operations on Just values
    */
-  public orElse<HandlerType>(
-    handler: () => Maybe<HandlerType>,
-  ): Maybe<Type> | Maybe<HandlerType> {
+  public orElse<HandlerType>(handler: () => Maybe<HandlerType>): Maybe<Type> | Maybe<HandlerType> {
     if (this.isJust()) {
-      return this
+      return Maybe.Just(this.value!)
     } else {
       return handler()
     }
@@ -308,12 +303,12 @@ export class Maybe<Type> {
    * @see {@link chain} for transformations that return Maybe
    * @see {@link matchWith} to handle both Just and Nothing cases
    */
-  public map<HandlerType>(
-    handler: (value: Type) => NonNullable<HandlerType>,
-  ): Maybe<HandlerType> {
-    return new Maybe<HandlerType>(
-      gleamOption.map(this.inner as never, handler as never),
-    )
+  public map<HandlerType>(handler: (value: Type) => NonNullable<HandlerType>): Maybe<HandlerType> {
+    if (this.isJust()) {
+      return Maybe.Just(handler(this.value!))
+    } else {
+      return Maybe.Nothing<HandlerType>()
+    }
   }
 
   /**
@@ -347,12 +342,12 @@ export class Maybe<Type> {
    *
    * @see {@link map} for simple value transformations
    */
-  public chain<HandlerType>(
-    handler: (value: Type) => Maybe<HandlerType>,
-  ): Maybe<HandlerType> {
-    return new Maybe<HandlerType>(
-      gleamOption.chain(this.inner as never, (value: Type) => handler(value).inner as never),
-    )
+  public chain<HandlerType>(handler: (value: Type) => Maybe<HandlerType>): Maybe<HandlerType> {
+    if (this.isJust()) {
+      return handler(this.value!)
+    } else {
+      return Maybe.Nothing<HandlerType>()
+    }
   }
 
   /**
@@ -391,8 +386,8 @@ export class Maybe<Type> {
    * @see {@link Nothing} for creating an empty Maybe
    */
   public static FromNullable<Type>(value: Nullable<Type>): Maybe<Type> {
-    if (value == null) return Maybe.Nothing<Type>()
-    else return Maybe.Just<Type>(value!)
+    if (value == null) return Maybe.Nothing()
+    else return Maybe.Just(value!)
   }
 
   /**
@@ -422,7 +417,7 @@ export class Maybe<Type> {
    * @see {@link FromNullable} for converting nullable values
    */
   public static Just<Type>(value: NonNullable<Type>): Maybe<Type> {
-    return new Maybe<Type>(gleamOption.just(value))
+    return new Maybe(value)
   }
 
   /**
@@ -451,6 +446,6 @@ export class Maybe<Type> {
    * @see {@link FromNullable} for converting nullable values
    */
   public static Nothing<Type>(): Maybe<Type> {
-    return new Maybe<Type>(gleamOption.nothing())
+    return new Maybe()
   }
 }
