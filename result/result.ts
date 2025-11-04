@@ -4,8 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import * as gleamResult from '../runtime/folklore/folklore/result.mjs'
-
 /**
  * Valid error types for Result.
  *
@@ -56,7 +54,11 @@ type ResultError = string | Error
  * ```
  */
 export class Result<Type> {
-  private constructor(private readonly inner: unknown) {}
+  private constructor(
+    private readonly success: boolean,
+    private readonly value: Type,
+    private readonly error: ResultError,
+  ) {}
 
   /**
    * Type guard to check if a value is a Result instance.
@@ -95,7 +97,7 @@ export class Result<Type> {
    * @see {@link matchWith} for handling both cases
    */
   public isOk(): boolean {
-    return Boolean(gleamResult.is_ok(this.inner as never))
+    return this.success
   }
 
   /**
@@ -115,7 +117,7 @@ export class Result<Type> {
    * @see {@link matchWith} for handling both cases
    */
   public isError(): boolean {
-    return Boolean(gleamResult.is_error(this.inner as never))
+    return !this.isOk()
   }
 
   /**
@@ -155,11 +157,11 @@ export class Result<Type> {
     Ok: (value: Type) => OkReturnType
     Error: (error: ResultError) => ErrorReturnType
   }): OkReturnType | ErrorReturnType {
-    return gleamResult.match_with(
-      this.inner as never,
-      pattern.Ok as never,
-      pattern.Error as never,
-    ) as OkReturnType | ErrorReturnType
+    if (this.isOk()) {
+      return pattern.Ok(this.value)
+    } else {
+      return pattern.Error(this.error)
+    }
   }
 
   /**
@@ -188,7 +190,7 @@ export class Result<Type> {
    * @see {@link merge} to get either the value or the error
    */
   public getOrElse(defaultValue: Type): Type {
-    return gleamResult.get_or_else(this.inner as never, defaultValue) as Type
+    return this.isOk() ? this.value : defaultValue
   }
 
   /**
@@ -224,9 +226,10 @@ export class Result<Type> {
   public orElse<HandlerType>(
     handler: (value: Result<Type>) => Result<HandlerType>,
   ): Result<Type> | Result<HandlerType> {
-    return new Result(
-      gleamResult.or_else(this.inner as never, (error: ResultError) => handler(Result.Error(error)).inner as never),
-    ) as Result<Type> | Result<HandlerType>
+    return this.matchWith({
+      Ok: (value) => Result.Ok(value),
+      Error: (error) => handler(Result.Error(error)),
+    })
   }
 
   /**
@@ -260,7 +263,10 @@ export class Result<Type> {
    * @see {@link matchWith} for handling value and error differently
    */
   public merge(): Type | ResultError {
-    return gleamResult.merge(this.inner as never) as Type | ResultError
+    return this.matchWith({
+      Ok: (value) => value,
+      Error: (error) => error,
+    })
   }
 
   /**
@@ -295,9 +301,10 @@ export class Result<Type> {
    * @see {@link chain} for error recovery with alternative Results
    */
   public mapError(error: ResultError): Result<Type> {
-    return new Result<Type>(
-      gleamResult.map_error_replace(this.inner as never, error),
-    )
+    return this.matchWith({
+      Ok: (value) => Result.Ok(value),
+      Error: () => Result.Error(error),
+    })
   }
 
   /**
@@ -331,10 +338,12 @@ export class Result<Type> {
    * @see {@link chain} for transformations that return Results
    * @see {@link matchWith} to handle both Ok and Error cases
    */
-  public map<HandlerType>(
-    handler: (value: Type) => HandlerType,
-  ): Result<HandlerType> {
-    return new Result<HandlerType>(gleamResult.map(this.inner as never, handler as never))
+  public map<HandlerType>(handler: (value: Type) => HandlerType): Result<HandlerType> {
+    if (this.isOk()) {
+      return Result.Ok(handler(this.value))
+    } else {
+      return Result.Error<HandlerType>(this.error)
+    }
   }
 
   /**
@@ -368,12 +377,12 @@ export class Result<Type> {
    *
    * @see {@link map} for simple value transformations
    */
-  public chain<HandlerType>(
-    handler: (value: Type) => Result<HandlerType>,
-  ): Result<HandlerType> {
-    return new Result<HandlerType>(
-      gleamResult.chain(this.inner as never, (value: Type) => handler(value).inner as never),
-    )
+  public chain<HandlerType>(handler: (value: Type) => Result<HandlerType>): Result<HandlerType> {
+    if (this.isOk()) {
+      return handler(this.value)
+    } else {
+      return Result.Error<HandlerType>(this.error)
+    }
   }
 
   /**
@@ -433,9 +442,7 @@ export class Result<Type> {
    *
    * @see {@link Try} for wrapping synchronous operations
    */
-  public static async FromPromise<Type>(
-    promise: Promise<Type>,
-  ): Promise<Result<Type>> {
+  public static async FromPromise<Type>(promise: Promise<Type>): Promise<Result<Type>> {
     try {
       return Result.Ok(await promise)
     } catch (error) {
@@ -465,7 +472,7 @@ export class Result<Type> {
    * @see {@link Error} for creating error results
    */
   public static Ok<Type = void>(value?: Type): Result<Type> {
-    return new Result<Type>(gleamResult.ok(value as Type))
+    return new Result<Type>(true, value as Type, undefined as never)
   }
 
   /**
@@ -490,6 +497,6 @@ export class Result<Type> {
    * @see {@link Ok} for creating success results
    */
   public static Error<Type>(error: ResultError): Result<Type> {
-    return new Result<Type>(gleamResult.error(error))
+    return new Result<Type>(false, undefined as never, error)
   }
 }
