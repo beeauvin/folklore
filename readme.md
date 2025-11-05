@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  A small, focused TypeScript library for safer code through functional patterns. Inspired by <a href="https://folktale.origamitower.com">folktale</a>,
+  A small, focused TypeScript library for safer code through functional patterns using natural language. Inspired by <a href="https://folktale.origamitower.com">folktale</a>.
 </p>
 
 <p align="center">
