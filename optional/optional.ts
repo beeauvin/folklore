@@ -148,6 +148,85 @@ export class Optional<Type> {
   }
 
   /**
+   * Returns the wrapped value if the optional is non-null, otherwise returns the provided optional.
+   *
+   * This method provides optional chaining with fallbacks, allowing multiple optionals to be tried
+   * before ultimately providing a guaranteed value with `otherwise(_:)`.
+   *
+   * @param optional - The optional to use when this optional is None
+   * @returns This optional if Some, otherwise the provided optional
+   *
+   * @example
+   * ```ts
+   * // Try multiple optionals in sequence before falling back to a guaranteed value
+   * const primaryValue = cache.retrieve(key)
+   * const backupValue = fallbackCache.retrieve(key)
+   * const result = primaryValue.optionally(backupValue).otherwise('Default')
+   * // Equivalent to: const result = primaryValue ?? backupValue ?? 'Default'
+   * ```
+   */
+  public optionally(optional: Optional<Type>): Optional<Type>
+
+  /**
+   * Returns the wrapped value if the optional is non-null, otherwise evaluates and returns
+   * the result of the provided closure which returns another optional.
+   *
+   * This method provides lazy evaluation of the fallback optional, which is useful when
+   * the fallback is expensive to compute or has side effects that should only occur when needed.
+   *
+   * @param provider - A closure that provides a fallback optional when evaluated
+   * @returns This optional if Some, otherwise the result of evaluating the provider
+   *
+   * @example
+   * ```ts
+   * // Only compute fallback optional if needed
+   * const cachedResult = cache.retrieve(key)
+   * const result = cachedResult.optionally(() => {
+   *   return computeExpensiveFallback()  // Returns another optional
+   * }).otherwise('Default')  // Finally provide a guaranteed value
+   * ```
+   */
+  public optionally(provider: () => Optional<Type>): Optional<Type>
+
+  /**
+   * Returns the wrapped value if the optional is non-null, otherwise awaits and returns
+   * the result of the provided async closure which returns another optional.
+   *
+   * Useful for async operations where the fallback needs to be performed asynchronously.
+   *
+   * @param provider - An async closure that provides a fallback optional when evaluated
+   * @returns This optional if Some, otherwise the result of awaiting the provider
+   *
+   * @example
+   * ```ts
+   * // With async fallback computation
+   * const localValue = await localCache.retrieveValue(key)
+   * const value = await localValue.optionally(async () => {
+   *   return await remoteService.fetchOptionalValue()
+   * }).otherwise('Default')
+   * ```
+   */
+  public optionally(provider: () => Promise<Optional<Type>>): Promise<Optional<Type>>
+
+  // Implementation
+  public optionally(
+    optionalOrProvider: Optional<Type> | (() => Optional<Type>) | (() => Promise<Optional<Type>>),
+  ): Optional<Type> | Promise<Optional<Type>> {
+    if (this.value != null) {
+      return this
+    }
+
+    // If it's a function, call it
+    if (typeof optionalOrProvider === 'function') {
+      const result = (optionalOrProvider as () => Optional<Type> | Promise<Optional<Type>>)()
+      return result
+    }
+
+    // Otherwise it's a direct Optional
+    return optionalOrProvider as Optional<Type>
+  }
+
+  /**
    * Converts a nullable value into an Optional.
    *
    * This is the primary way to create Optional values from existing code that uses
