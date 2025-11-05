@@ -1,6 +1,6 @@
 {
   "name": "@folklore/folklore",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "exports": "./mod.ts",
   "tasks": {
     "package": "deno run -A .tasks/package.ts",
@@ -20,7 +20,7 @@
   },
   "fmt": {
     "exclude": [".dist"],
-    "lineWidth": 120,
+    "lineWidth": 100,
     "singleQuote": true,
     "semiColons": false
   }
