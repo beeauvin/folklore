@@ -7,6 +7,60 @@
 import type { Nullable } from '../utility/types.ts'
 
 /**
+ * Handler for when an Optional contains a value (Some case).
+ * Used with the `when` method to execute side effects.
+ */
+export interface WhenSome<Type> {
+  some: (value: Type) => void
+  none?: never
+}
+
+/**
+ * Handler for when an Optional is empty (None case).
+ * Used with the `when` method to execute side effects.
+ */
+export interface WhenNone {
+  some?: never
+  none: () => void
+}
+
+/**
+ * Handlers for both Some and None cases.
+ * Used with the `when` method to execute side effects based on the Optional's state.
+ */
+export interface WhenBoth<Type> {
+  some: (value: Type) => void
+  none: () => void
+}
+
+/**
+ * Async handler for when an Optional contains a value (Some case).
+ * Used with the `when` method to execute async side effects.
+ */
+export interface WhenSomeAsync<Type> {
+  some: (value: Type) => Promise<void>
+  none?: never
+}
+
+/**
+ * Async handler for when an Optional is empty (None case).
+ * Used with the `when` method to execute async side effects.
+ */
+export interface WhenNoneAsync {
+  some?: never
+  none: () => Promise<void>
+}
+
+/**
+ * Async handlers for both Some and None cases.
+ * Used with the `when` method to execute async side effects based on the Optional's state.
+ */
+export interface WhenBothAsync<Type> {
+  some: (value: Type) => Promise<void>
+  none: () => Promise<void>
+}
+
+/**
  * Represents an optional value that may or may not exist.
  *
  * Optional provides a type-safe way to handle nullable values with an API
@@ -345,6 +399,89 @@ export class Optional<Type> {
 
     // Otherwise wrap in Optional (map case)
     return Optional.FromNullable(result as Transformed)
+  }
+
+  /**
+   * Executes side-effect closures based on whether the optional contains a value.
+   *
+   * This method provides a functional alternative to if-let statements for performing
+   * side effects. It accepts handlers for the Some case, None case, or both, making
+   * code more intention-revealing and expressive.
+   *
+   * @param handlers - An object containing handler(s) for some, none, or both cases
+   *
+   * @example
+   * ```ts
+   * // Execute code only when optional contains a value
+   * const user: Optional<User> = getCurrentUser()
+   * user.when({ some: person => analytics.log(person.id) })
+   * ```
+   *
+   * @example
+   * ```ts
+   * // Execute code only when optional is empty
+   * const user: Optional<User> = getCurrentUser()
+   * user.when({ none: () => analytics.logAnonymous() })
+   * ```
+   *
+   * @example
+   * ```ts
+   * // Handle both presence and absence
+   * const user: Optional<User> = getCurrentUser()
+   * user.when({
+   *   some: person => analytics.log(person.id),
+   *   none: () => analytics.logAnonymous()
+   * })
+   * ```
+   *
+   * @example
+   * ```ts
+   * // Async side effects
+   * await user.when({
+   *   some: async person => await analytics.logAsync(person.id)
+   * })
+   * ```
+   */
+  public when(handlers: WhenSome<Type> | WhenNone | WhenBoth<Type>): void
+
+  /**
+   * Executes async side-effect closures based on whether the optional contains a value.
+   *
+   * @param handlers - An object containing async handler(s) for some, none, or both cases
+   * @returns Promise that resolves when the handler completes
+   */
+  public when(handlers: WhenSomeAsync<Type> | WhenNoneAsync | WhenBothAsync<Type>): Promise<void>
+
+  // Implementation
+  public when(
+    handlers:
+      | WhenSome<Type>
+      | WhenNone
+      | WhenBoth<Type>
+      | WhenSomeAsync<Type>
+      | WhenNoneAsync
+      | WhenBothAsync<Type>,
+  ): void | Promise<void> {
+    // Check if we have a value
+    if (this.value != null) {
+      // Some case - call the some handler if it exists
+      if ('some' in handlers && handlers.some) {
+        const result = handlers.some(this.value)
+        // If result is a Promise, return it
+        if (result instanceof Promise) {
+          return result
+        }
+      }
+    } else {
+      // None case - call the none handler if it exists
+      if ('none' in handlers && handlers.none) {
+        const result = handlers.none()
+        // If result is a Promise, return it
+        if (result instanceof Promise) {
+          return result
+        }
+      }
+    }
   }
 
   /**

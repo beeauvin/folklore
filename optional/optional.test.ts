@@ -311,4 +311,176 @@ describe('Optional', () => {
       assertEquals(unwrapped, '0')
     })
   })
+
+  describe('when() - with some handler', () => {
+    it('should execute action when optional is Some', () => {
+      const optional: Optional<string> = Optional.Some('Value')
+      let executed = false
+      optional.when({
+        some: (_value) => {
+          executed = true
+        },
+      })
+      assertEquals(executed, true)
+    })
+
+    it('should not execute action when optional is None', () => {
+      const optional: Optional<string> = Optional.None<string>()
+      let executed = false
+      optional.when({
+        some: (_value) => {
+          executed = true
+        },
+      })
+      assertEquals(executed, false)
+    })
+  })
+
+  describe('when() - with none handler', () => {
+    it('should execute action when optional is None', () => {
+      const optional: Optional<string> = Optional.None<string>()
+      let executed = false
+      optional.when({
+        none: () => {
+          executed = true
+        },
+      })
+      assertEquals(executed, true)
+    })
+
+    it('should not execute action when optional is Some', () => {
+      const optional: Optional<string> = Optional.Some('Value')
+      let executed = false
+      optional.when({
+        none: () => {
+          executed = true
+        },
+      })
+      assertEquals(executed, false)
+    })
+  })
+
+  describe('when() - with both handlers', () => {
+    it('should execute some handler when optional is Some', () => {
+      const optional: Optional<string> = Optional.Some('Value')
+      let someExecuted = false
+      let noneExecuted = false
+      optional.when({
+        some: (_value) => {
+          someExecuted = true
+        },
+        none: () => {
+          noneExecuted = true
+        },
+      })
+      assertEquals(someExecuted, true)
+      assertEquals(noneExecuted, false)
+    })
+
+    it('should execute none handler when optional is None', () => {
+      const optional: Optional<string> = Optional.None<string>()
+      let someExecuted = false
+      let noneExecuted = false
+      optional.when({
+        some: (_value) => {
+          someExecuted = true
+        },
+        none: () => {
+          noneExecuted = true
+        },
+      })
+      assertEquals(someExecuted, false)
+      assertEquals(noneExecuted, true)
+    })
+  })
+
+  describe('when() - with async some handler', () => {
+    it('should execute action when optional is Some', async () => {
+      const optional: Optional<number> = Optional.Some(42)
+      let executed = false
+      await optional.when({
+        some: async (_value) => {
+          await Promise.resolve()
+          executed = true
+        },
+      })
+      assertEquals(executed, true)
+    })
+
+    it('should not execute action when optional is None', async () => {
+      const optional: Optional<number> = Optional.None<number>()
+      let executed = false
+      await optional.when({
+        some: async (_value) => {
+          await Promise.resolve()
+          executed = true
+        },
+      })
+      assertEquals(executed, false)
+    })
+  })
+
+  describe('when() - with async none handler', () => {
+    it('should execute action when optional is None', async () => {
+      const optional: Optional<number> = Optional.None<number>()
+      let executed = false
+      await optional.when({
+        none: async () => {
+          await Promise.resolve()
+          executed = true
+        },
+      })
+      assertEquals(executed, true)
+    })
+
+    it('should not execute action when optional is Some', async () => {
+      const optional: Optional<number> = Optional.Some(42)
+      let executed = false
+      await optional.when({
+        none: async () => {
+          await Promise.resolve()
+          executed = true
+        },
+      })
+      assertEquals(executed, false)
+    })
+  })
+
+  describe('when() - with async both handlers', () => {
+    it('should execute some handler when optional is Some', async () => {
+      const optional: Optional<number> = Optional.Some(42)
+      let someExecuted = false
+      let noneExecuted = false
+      await optional.when({
+        some: async (_value) => {
+          await Promise.resolve()
+          someExecuted = true
+        },
+        none: async () => {
+          await Promise.resolve()
+          noneExecuted = true
+        },
+      })
+      assertEquals(someExecuted, true)
+      assertEquals(noneExecuted, false)
+    })
+
+    it('should execute none handler when optional is None', async () => {
+      const optional: Optional<number> = Optional.None<number>()
+      let someExecuted = false
+      let noneExecuted = false
+      await optional.when({
+        some: async (_value) => {
+          await Promise.resolve()
+          someExecuted = true
+        },
+        none: async () => {
+          await Promise.resolve()
+          noneExecuted = true
+        },
+      })
+      assertEquals(someExecuted, false)
+      assertEquals(noneExecuted, true)
+    })
+  })
 })
