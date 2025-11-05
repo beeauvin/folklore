@@ -483,4 +483,47 @@ describe('Optional', () => {
       assertEquals(noneExecuted, true)
     })
   })
+
+  describe('where() - with sync predicate', () => {
+    it('should return self when predicate passes and optional is Some', () => {
+      const optional: Optional<number> = Optional.Some(42)
+      const result = optional.where((value) => value > 0).otherwise(-1)
+      assertEquals(result, 42)
+    })
+
+    it('should return None when predicate fails and optional is Some', () => {
+      const optional: Optional<number> = Optional.Some(-5)
+      const result = optional.where((value) => value > 0).otherwise(-1)
+      assertEquals(result, -1)
+    })
+
+    it('should return None when optional is None', () => {
+      const optional: Optional<number> = Optional.None<number>()
+      const result = optional.where((value) => value > 0).otherwise(-1)
+      assertEquals(result, -1)
+    })
+  })
+
+  describe('where() - with async predicate', () => {
+    it('should return self when predicate passes and optional is Some', async () => {
+      const optional: Optional<number> = Optional.Some(42)
+      const result = await optional.where(async (value) => await Promise.resolve(value > 0))
+      const unwrapped = result.otherwise(-1)
+      assertEquals(unwrapped, 42)
+    })
+
+    it('should return None when predicate fails and optional is Some', async () => {
+      const optional: Optional<number> = Optional.Some(-5)
+      const result = await optional.where(async (value) => await Promise.resolve(value > 0))
+      const unwrapped = result.otherwise(-1)
+      assertEquals(unwrapped, -1)
+    })
+
+    it('should return None when optional is None', async () => {
+      const optional: Optional<number> = Optional.None<number>()
+      const result = await optional.where(async (value) => await Promise.resolve(value > 0))
+      const unwrapped = result.otherwise(-1)
+      assertEquals(unwrapped, -1)
+    })
+  })
 })

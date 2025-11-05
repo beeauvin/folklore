@@ -485,6 +485,63 @@ export class Optional<Type> {
   }
 
   /**
+   * Returns self if the optional contains a value that satisfies the predicate, otherwise returns None.
+   *
+   * This method provides a way to conditionally keep or discard an optional value based on a validation,
+   * making code more intention-revealing and natural to read.
+   *
+   * @param predicate - A function that tests the wrapped value
+   * @returns Self if Some and predicate passes, otherwise None
+   *
+   * @example
+   * ```ts
+   * // Keep only positive numbers
+   * const userId: Optional<number> = getUserId()
+   * const validId = userId
+   *   .where(id => id > 0)
+   *   .transform(async id => await fetchUser(id))
+   *   .otherwise(guestUser)
+   * ```
+   *
+   * @example
+   * ```ts
+   * // Validate with async predicate
+   * const email: Optional<string> = getEmail()
+   * const verified = await email.where(async addr => {
+   *   return await emailValidator.isValid(addr)
+   * })
+   * ```
+   */
+  public where(predicate: (value: Type) => boolean): Optional<Type>
+
+  /**
+   * Returns self if the optional contains a value that satisfies the async predicate, otherwise returns None.
+   *
+   * @param predicate - An async function that tests the wrapped value
+   * @returns Promise resolving to self if Some and predicate passes, otherwise None
+   */
+  public where(predicate: (value: Type) => Promise<boolean>): Promise<Optional<Type>>
+
+  // Implementation
+  public where(
+    predicate: ((value: Type) => boolean) | ((value: Type) => Promise<boolean>),
+  ): Optional<Type> | Promise<Optional<Type>> {
+    if (this.value == null) {
+      return Optional.None<Type>()
+    }
+
+    const result = predicate(this.value)
+
+    // If result is a Promise, we need to await it
+    if (result instanceof Promise) {
+      return result.then((passes) => (passes ? this : Optional.None<Type>()))
+    }
+
+    // Sync case: return self if passes, None otherwise
+    return result ? this : Optional.None<Type>()
+  }
+
+  /**
    * Converts a nullable value into an Optional.
    *
    * This is the primary way to create Optional values from existing code that uses
