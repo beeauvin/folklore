@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import type { Nullable } from "../utility/types.ts";
+import type { Nullable } from '../utility/types.ts'
 
 /**
  * Represents an optional value that may or may not exist.
@@ -66,7 +66,7 @@ export class Optional<Type> {
    * ```
    */
   public static HasInstance<Type>(value: unknown): value is Optional<Type> {
-    return value instanceof Optional;
+    return value instanceof Optional
   }
 
   /**
@@ -85,7 +85,7 @@ export class Optional<Type> {
    * // Equivalent to: const displayName = username ?? 'Guest'
    * ```
    */
-  public otherwise(defaultValue: Type): Type;
+  public otherwise(defaultValue: Type): Type
 
   /**
    * Returns the wrapped value if the optional is non-null, otherwise evaluates and returns
@@ -108,7 +108,7 @@ export class Optional<Type> {
    * })
    * ```
    */
-  public otherwise(provider: () => Type): Type;
+  public otherwise(provider: () => Type): Type
 
   /**
    * Returns the wrapped value if the optional is non-null, otherwise awaits and returns
@@ -127,24 +127,24 @@ export class Optional<Type> {
    * })
    * ```
    */
-  public otherwise(provider: () => Promise<Type>): Promise<Type>;
+  public otherwise(provider: () => Promise<Type>): Promise<Type>
 
   // Implementation
   public otherwise(
     valueOrProvider: Type | (() => Type) | (() => Promise<Type>),
   ): Type | Promise<Type> {
     if (this.value != null) {
-      return this.value;
+      return this.value
     }
 
     // If it's a function, call it
-    if (typeof valueOrProvider === "function") {
-      const result = (valueOrProvider as () => Type | Promise<Type>)();
-      return result;
+    if (typeof valueOrProvider === 'function') {
+      const result = (valueOrProvider as () => Type | Promise<Type>)()
+      return result
     }
 
     // Otherwise it's a direct value
-    return valueOrProvider as Type;
+    return valueOrProvider as Type
   }
 
   /**
@@ -175,8 +175,8 @@ export class Optional<Type> {
    * @see {@link None} for creating an empty Optional
    */
   public static FromNullable<Type>(value: Nullable<Type>): Optional<Type> {
-    if (value == null) return Optional.None();
-    else return Optional.Some(value);
+    if (value == null) return Optional.None()
+    else return Optional.Some(value)
   }
 
   /**
@@ -198,7 +198,7 @@ export class Optional<Type> {
    * @see {@link FromNullable} for converting nullable values
    */
   public static Some<Type>(value: NonNullable<Type>): Optional<Type> {
-    return new Optional(value);
+    return new Optional(value)
   }
 
   /**
@@ -221,6 +221,6 @@ export class Optional<Type> {
    * @see {@link FromNullable} for converting nullable values
    */
   public static None<Type>(): Optional<Type> {
-    return new Optional();
+    return new Optional()
   }
 }

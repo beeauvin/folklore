@@ -72,7 +72,7 @@ describe('Optional', () => {
   })
 
   describe('otherwise() - with async provider', () => {
-    const asyncProvider = async () => 2.71
+    const asyncProvider = async () => await Promise.resolve(2.71)
 
     it('should return wrapped value when optional is Some', async () => {
       const optional: Optional<number> = Optional.Some(3.14)
@@ -91,7 +91,7 @@ describe('Optional', () => {
       let called = false
       const provider = async () => {
         called = true
-        return 2.71
+        return await Promise.resolve(2.71)
       }
       await optional.otherwise(provider)
       assertEquals(called, false)
