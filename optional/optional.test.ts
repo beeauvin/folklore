@@ -1,8 +1,7 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
+// Copyright © 2025 Cassidy Spring (Bee).
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import { describe, it } from '@std/testing/bdd'
 import { assertEquals } from '@std/assert'
@@ -288,7 +287,9 @@ describe('Optional', () => {
 
   describe('transform() - with async transformer returning optional', () => {
     const asyncTransformerOptional = async (value: number) =>
-      await Promise.resolve(value > 0 ? Optional.Some(String(value * 2)) : Optional.None<string>())
+      await Promise.resolve(
+        value > 0 ? Optional.Some(String(value * 2)) : Optional.None<string>(),
+      )
 
     it('should return transformed value when optional is Some and transformation succeeds', async () => {
       const optional: Optional<number> = Optional.Some(21)
@@ -507,21 +508,27 @@ describe('Optional', () => {
   describe('where() - with async predicate', () => {
     it('should return self when predicate passes and optional is Some', async () => {
       const optional: Optional<number> = Optional.Some(42)
-      const result = await optional.where(async (value) => await Promise.resolve(value > 0))
+      const result = await optional.where(
+        async (value) => await Promise.resolve(value > 0),
+      )
       const unwrapped = result.otherwise(-1)
       assertEquals(unwrapped, 42)
     })
 
     it('should return None when predicate fails and optional is Some', async () => {
       const optional: Optional<number> = Optional.Some(-5)
-      const result = await optional.where(async (value) => await Promise.resolve(value > 0))
+      const result = await optional.where(
+        async (value) => await Promise.resolve(value > 0),
+      )
       const unwrapped = result.otherwise(-1)
       assertEquals(unwrapped, -1)
     })
 
     it('should return None when optional is None', async () => {
       const optional: Optional<number> = Optional.None<number>()
-      const result = await optional.where(async (value) => await Promise.resolve(value > 0))
+      const result = await optional.where(
+        async (value) => await Promise.resolve(value > 0),
+      )
       const unwrapped = result.otherwise(-1)
       assertEquals(unwrapped, -1)
     })

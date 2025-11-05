@@ -1,10 +1,9 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
+// Copyright © 2025 Cassidy Spring (Bee).
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-export * from './maybe/maybe.ts'
+export * from './optional/optional.ts'
 export * from './result/result.ts'
 
 export type * from './utility/types.ts'

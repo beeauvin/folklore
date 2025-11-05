@@ -1,8 +1,7 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
+// Copyright © 2025 Cassidy Spring (Bee).
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 /**
  * Valid error types for Result.
@@ -338,7 +337,9 @@ export class Result<Type> {
    * @see {@link chain} for transformations that return Results
    * @see {@link matchWith} to handle both Ok and Error cases
    */
-  public map<HandlerType>(handler: (value: Type) => HandlerType): Result<HandlerType> {
+  public map<HandlerType>(
+    handler: (value: Type) => HandlerType,
+  ): Result<HandlerType> {
     if (this.isOk()) {
       return Result.Ok(handler(this.value))
     } else {
@@ -377,7 +378,9 @@ export class Result<Type> {
    *
    * @see {@link map} for simple value transformations
    */
-  public chain<HandlerType>(handler: (value: Type) => Result<HandlerType>): Result<HandlerType> {
+  public chain<HandlerType>(
+    handler: (value: Type) => Result<HandlerType>,
+  ): Result<HandlerType> {
     if (this.isOk()) {
       return handler(this.value)
     } else {
@@ -442,7 +445,9 @@ export class Result<Type> {
    *
    * @see {@link Try} for wrapping synchronous operations
    */
-  public static async FromPromise<Type>(promise: Promise<Type>): Promise<Result<Type>> {
+  public static async FromPromise<Type>(
+    promise: Promise<Type>,
+  ): Promise<Result<Type>> {
     try {
       return Result.Ok(await promise)
     } catch (error) {

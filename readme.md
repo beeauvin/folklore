@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  A small, focused TypeScript library for safer code through functional patterns. Inspired by <a href="https://folktale.origamitower.com">folktale</a>,
+  A small, focused TypeScript library for safer code through functional patterns using natural language. Inspired by <a href="https://folktale.origamitower.com">folktale</a>.
 </p>
 
 <p align="center">
@@ -16,8 +16,8 @@
 
 # folklore
 
-Folklore provides two essential types for writing more reliable TypeScript: `Maybe` for handling optional values and
-`Result` for managing errors without exceptions.
+Folklore provides two essential types for writing more reliable TypeScript: `Optional` for handling
+optional values and `Result` for managing errors without exceptions.
 
 ## Installation
 
@@ -39,22 +39,41 @@ npm install folklore
 
 ## Quick Start
 
-### Maybe - Safe Optional Values
+### Optional - Safe Optional Values
 
-Handle nullable values without null checks:
+Handle nullable values with readable, natural syntax:
 
 ```typescript
-import { Maybe } from 'folklore'
+import { Optional } from 'folklore'
 
-function findUser(id: string): Maybe<User> {
+function findUser(id: string): Optional<User> {
   const user = database.get(id)
-  return Maybe.FromNullable(user)
+  return Optional.FromNullable(user)
 }
 
+// Basic transformation and fallback
 const greeting = findUser('123')
-  .map((user) => user.name)
-  .map((name) => `Hello, ${name}!`)
-  .getOrElse('Hello, stranger!')
+  .transform((user) => user.name)
+  .transform((name) => `Hello, ${name}!`)
+  .otherwise('Hello, stranger!')
+
+// Optional chaining with multiple fallbacks
+const displayName = primaryCache
+  .retrieve(key)
+  .optionally(backupCache.retrieve(key))
+  .otherwise('Guest')
+
+// Side effects with when
+findUser('123').when({
+  some: (user) => analytics.track(user.id),
+  none: () => analytics.trackAnonymous(),
+})
+
+// Filtering with where
+const validId = getUserId()
+  .where((id) => id > 0)
+  .transform((id) => fetchUser(id))
+  .otherwise(guestUser)
 ```
 
 ### Result - Error Handling Without Exceptions
@@ -82,17 +101,17 @@ const response = await Result.FromPromise(fetch('/api/data'))
 
 ## API
 
-The library includes comprehensive JSDoc documentation - your editor's IntelliSense will show you examples and usage
-guidance for every method. See
-[#13: A Retelling, not a reimplementation](https://github.com/beeauvin/folklore/issues/13) for more details on API
-decisions.
+The library includes comprehensive JSDoc documentation - your editor's IntelliSense will show you
+examples and usage guidance for every method. See
+[#13: A Retelling, not a reimplementation](https://github.com/beeauvin/folklore/issues/13) for more
+details on API decisions.
 
 ## Status & Contributing
 
 Folklore is used in production on several large/critical TypeScript projects and is well-tested.
 
-If you're interested in contributing, please open an issue to discuss your idea first. I am very open to anything
-docs/stability/project related.
+If you're interested in contributing, please open an issue to discuss your idea first. I am very
+open to anything docs/stability/project related.
 
 ## License
 

@@ -1,8 +1,7 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
+// Copyright © 2025 Cassidy Spring (Bee).
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import type { Nullable } from '../utility/types.ts'
 
@@ -260,11 +259,16 @@ export class Optional<Type> {
    * }).otherwise('Default')
    * ```
    */
-  public optionally(provider: () => Promise<Optional<Type>>): Promise<Optional<Type>>
+  public optionally(
+    provider: () => Promise<Optional<Type>>,
+  ): Promise<Optional<Type>>
 
   // Implementation
   public optionally(
-    optionalOrProvider: Optional<Type> | (() => Optional<Type>) | (() => Promise<Optional<Type>>),
+    optionalOrProvider:
+      | Optional<Type>
+      | (() => Optional<Type>)
+      | (() => Promise<Optional<Type>>),
   ): Optional<Type> | Promise<Optional<Type>> {
     if (this.value != null) {
       return this
@@ -272,7 +276,9 @@ export class Optional<Type> {
 
     // If it's a function, call it
     if (typeof optionalOrProvider === 'function') {
-      const result = (optionalOrProvider as () => Optional<Type> | Promise<Optional<Type>>)()
+      const result = (
+        optionalOrProvider as () => Optional<Type> | Promise<Optional<Type>>
+      )()
       return result
     }
 
@@ -364,7 +370,9 @@ export class Optional<Type> {
     transformer: (value: Type) => Optional<Transformed>,
   ): Optional<Transformed>
 
-  public transform<Transformed>(transformer: (value: Type) => Transformed): Optional<Transformed>
+  public transform<Transformed>(
+    transformer: (value: Type) => Transformed,
+  ): Optional<Transformed>
 
   // Implementation
   public transform<Transformed>(
@@ -450,7 +458,9 @@ export class Optional<Type> {
    * @param handlers - An object containing async handler(s) for some, none, or both cases
    * @returns Promise that resolves when the handler completes
    */
-  public when(handlers: WhenSomeAsync<Type> | WhenNoneAsync | WhenBothAsync<Type>): Promise<void>
+  public when(
+    handlers: WhenSomeAsync<Type> | WhenNoneAsync | WhenBothAsync<Type>,
+  ): Promise<void>
 
   // Implementation
   public when(
@@ -520,7 +530,9 @@ export class Optional<Type> {
    * @param predicate - An async function that tests the wrapped value
    * @returns Promise resolving to self if Some and predicate passes, otherwise None
    */
-  public where(predicate: (value: Type) => Promise<boolean>): Promise<Optional<Type>>
+  public where(
+    predicate: (value: Type) => Promise<boolean>,
+  ): Promise<Optional<Type>>
 
   // Implementation
   public where(
