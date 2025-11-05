@@ -228,4 +228,87 @@ describe('Optional', () => {
       assertEquals(Optional.HasInstance('string'), false)
     })
   })
+
+  describe('transform() - with sync transformer', () => {
+    const syncTransformer = (value: string) => value.length
+
+    it('should return transformed value when optional is Some', () => {
+      const optional: Optional<string> = Optional.Some('Hello')
+      const result = optional.transform(syncTransformer).otherwise(0)
+      assertEquals(result, 5)
+    })
+
+    it('should return None when optional is None', () => {
+      const optional: Optional<string> = Optional.None<string>()
+      const result = optional.transform(syncTransformer).otherwise(0)
+      assertEquals(result, 0)
+    })
+  })
+
+  describe('transform() - with sync transformer returning optional', () => {
+    const syncTransformerOptional = (value: string) =>
+      value.length === 0 ? Optional.None<number>() : Optional.Some(value.length)
+
+    it('should return transformed value when optional is Some and transformation succeeds', () => {
+      const optional: Optional<string> = Optional.Some('Hello')
+      const result = optional.transform(syncTransformerOptional).otherwise(0)
+      assertEquals(result, 5)
+    })
+
+    it('should return None when transformation fails', () => {
+      const optional: Optional<string> = Optional.Some('')
+      const result = optional.transform(syncTransformerOptional).otherwise(0)
+      assertEquals(result, 0)
+    })
+
+    it('should return None when optional is None', () => {
+      const optional: Optional<string> = Optional.None<string>()
+      const result = optional.transform(syncTransformerOptional).otherwise(0)
+      assertEquals(result, 0)
+    })
+  })
+
+  describe('transform() - with async transformer', () => {
+    const asyncTransformer = async (value: number) => await Promise.resolve(String(value * 2))
+
+    it('should return transformed value when optional is Some', async () => {
+      const optional: Optional<number> = Optional.Some(21)
+      const result = await optional.transform(asyncTransformer)
+      const unwrapped = result.otherwise('0')
+      assertEquals(unwrapped, '42')
+    })
+
+    it('should return None when optional is None', async () => {
+      const optional: Optional<number> = Optional.None<number>()
+      const result = await optional.transform(asyncTransformer)
+      const unwrapped = result.otherwise('0')
+      assertEquals(unwrapped, '0')
+    })
+  })
+
+  describe('transform() - with async transformer returning optional', () => {
+    const asyncTransformerOptional = async (value: number) =>
+      await Promise.resolve(value > 0 ? Optional.Some(String(value * 2)) : Optional.None<string>())
+
+    it('should return transformed value when optional is Some and transformation succeeds', async () => {
+      const optional: Optional<number> = Optional.Some(21)
+      const result = await optional.transform(asyncTransformerOptional)
+      const unwrapped = result.otherwise('0')
+      assertEquals(unwrapped, '42')
+    })
+
+    it('should return None when transformation fails', async () => {
+      const optional: Optional<number> = Optional.Some(0)
+      const result = await optional.transform(asyncTransformerOptional)
+      const unwrapped = result.otherwise('0')
+      assertEquals(unwrapped, '0')
+    })
+
+    it('should return None when optional is None', async () => {
+      const optional: Optional<number> = Optional.None<number>()
+      const result = await optional.transform(asyncTransformerOptional)
+      const unwrapped = result.otherwise('0')
+      assertEquals(unwrapped, '0')
+    })
+  })
 })

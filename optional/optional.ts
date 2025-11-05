@@ -227,6 +227,127 @@ export class Optional<Type> {
   }
 
   /**
+   * Transforms the wrapped value if the optional is non-null, otherwise returns None.
+   *
+   * This method provides a natural language alternative to map/flatMap operations,
+   * making code that deals with optional transformations more readable and intention-revealing.
+   * The method automatically handles both direct transformations (map) and transformations that
+   * return optionals (flatMap), preventing nested optionals.
+   *
+   * @typeParam Transformed - The type of the transformed value
+   * @param transformer - A closure that transforms the wrapped value
+   * @returns An Optional containing the transformed value if Some, otherwise None
+   *
+   * @example
+   * ```ts
+   * // Direct transformation (map case)
+   * const username: Optional<string> = getUsernameFromDatabase()
+   * const nameLength = username
+   *   .transform(name => name.length)
+   *   .otherwise(0)
+   * ```
+   *
+   * @example
+   * ```ts
+   * // Transformation that returns Optional (flatMap case)
+   * const numericString: Optional<string> = Optional.Some('42')
+   * const number = numericString
+   *   .transform(str => {
+   *     const parsed = parseInt(str)
+   *     return isNaN(parsed) ? Optional.None<number>() : Optional.Some(parsed)
+   *   })
+   *   .otherwise(0)
+   * ```
+   *
+   * @example
+   * ```ts
+   * // Chaining transformations
+   * const result = await userId
+   *   .transform(async id => await userService.fetchProfile(id))
+   *   .transform(profile => profile.displayName)
+   *   .otherwise('Guest')
+   * ```
+   */
+
+  /**
+   * Transforms the wrapped value using an async closure that returns an Optional.
+   *
+   * This overload handles async flatMap transformations, automatically flattening the result
+   * to prevent nested optionals.
+   *
+   * @typeParam Transformed - The type of the transformed value
+   * @param transformer - An async closure that transforms the wrapped value and returns an Optional
+   * @returns Promise resolving to an Optional containing the transformed value, or None if transformation returned None
+   */
+  public transform<Transformed>(
+    transformer: (value: Type) => Promise<Optional<Transformed>>,
+  ): Promise<Optional<Transformed>>
+
+  /**
+   * Transforms the wrapped value using an async closure if the optional is non-null.
+   *
+   * This overload provides async transformation support for use with Promise-based operations.
+   *
+   * @typeParam Transformed - The type of the transformed value
+   * @param transformer - An async closure that transforms the wrapped value
+   * @returns Promise resolving to an Optional containing the transformed value if Some, otherwise None
+   */
+  public transform<Transformed>(
+    transformer: (value: Type) => Promise<Transformed>,
+  ): Promise<Optional<Transformed>>
+
+  /**
+   * Transforms the wrapped value using a closure that returns an Optional.
+   *
+   * This overload handles flatMap transformations where the transformer itself returns an Optional,
+   * automatically flattening the result to prevent nested optionals.
+   *
+   * @typeParam Transformed - The type of the transformed value
+   * @param transformer - A closure that transforms the wrapped value and returns an Optional
+   * @returns An Optional containing the transformed value, or None if original was None or transformation returned None
+   */
+  public transform<Transformed>(
+    transformer: (value: Type) => Optional<Transformed>,
+  ): Optional<Transformed>
+
+  public transform<Transformed>(transformer: (value: Type) => Transformed): Optional<Transformed>
+
+  // Implementation
+  public transform<Transformed>(
+    transformer:
+      | ((value: Type) => Transformed)
+      | ((value: Type) => Optional<Transformed>)
+      | ((value: Type) => Promise<Transformed>)
+      | ((value: Type) => Promise<Optional<Transformed>>),
+  ): Optional<Transformed> | Promise<Optional<Transformed>> {
+    if (this.value == null) {
+      return Optional.None<Transformed>()
+    }
+
+    const result = transformer(this.value)
+
+    // If the result is a Promise, we need to await it
+    if (result instanceof Promise) {
+      return result.then((awaited) => {
+        // If awaited is an Optional, return it (flatMap case)
+        if (Optional.HasInstance<Transformed>(awaited)) {
+          return awaited
+        }
+        // Otherwise wrap in Optional (map case)
+        return Optional.FromNullable(awaited as Transformed)
+      })
+    }
+
+    // If result is an Optional, return it (flatMap case)
+    if (Optional.HasInstance<Transformed>(result)) {
+      return result
+    }
+
+    // Otherwise wrap in Optional (map case)
+    return Optional.FromNullable(result as Transformed)
+  }
+
+  /**
    * Converts a nullable value into an Optional.
    *
    * This is the primary way to create Optional values from existing code that uses
