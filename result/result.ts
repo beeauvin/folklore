@@ -182,7 +182,8 @@ export class Result<Type> {
     // If it's a function, call it
     if (typeof valueOrProvider === 'function') {
       // Check arity to distinguish between () => T and (error) => T
-      const fn = valueOrProvider as Function
+      // deno-lint-ignore no-explicit-any
+      const fn = valueOrProvider as any
 
       if (fn.length === 0) {
         // No parameters - provider without error

@@ -17,6 +17,21 @@ class TestError extends Error {
 }
 
 Deno.test('Result', async (t) => {
+  await t.step('HasInstance()', async (t) => {
+    await t.step('should return true for Result instances', () => {
+      assertEquals(Result.HasInstance(Result.Ok(5)), true)
+      assertEquals(Result.HasInstance(Result.Error('oops')), true)
+    })
+
+    await t.step('should return false for non-Result values', () => {
+      assertEquals(Result.HasInstance(5), false)
+      assertEquals(Result.HasInstance(null), false)
+      assertEquals(Result.HasInstance(undefined), false)
+      assertEquals(Result.HasInstance({}), false)
+      assertEquals(Result.HasInstance('string'), false)
+    })
+  })
+
   await t.step('otherwise()', async (t) => {
     await t.step('with direct value', async (t) => {
       await t.step('should return success value when Ok', () => {
@@ -79,12 +94,12 @@ Deno.test('Result', async (t) => {
     await t.step('with async provider (no error)', async (t) => {
       await t.step('should return success value when Ok', async () => {
         const result = Result.Ok(1.23)
-        assertEquals(await result.otherwise(async () => 2.71), 1.23)
+        assertEquals(await result.otherwise(async () => await Promise.resolve(2.71)), 1.23)
       })
 
       await t.step('should await provider when Error', async () => {
         const result = Result.Error<number>('Failed')
-        assertEquals(await result.otherwise(async () => 2.71), 2.71)
+        assertEquals(await result.otherwise(async () => await Promise.resolve(2.71)), 2.71)
       })
     })
 
@@ -92,7 +107,9 @@ Deno.test('Result', async (t) => {
       await t.step('should return success value when Ok', async () => {
         const result = Result.Ok(1.23)
         assertEquals(
-          await result.otherwise(async (error: ResultError) => error === 'expected' ? 3.14 : 1.618),
+          await result.otherwise(async (error: ResultError) =>
+            await Promise.resolve(error === 'expected' ? 3.14 : 1.618)
+          ),
           1.23,
         )
       })
@@ -100,7 +117,7 @@ Deno.test('Result', async (t) => {
       await t.step('should pass error to async provider when Error', async () => {
         const result = Result.Error<number>('expected')
         const value = await result.otherwise(async (error: ResultError) =>
-          error === 'expected' ? 3.14 : 1.618
+          await Promise.resolve(error === 'expected' ? 3.14 : 1.618)
         )
         assertEquals(value, 3.14)
       })
@@ -108,7 +125,7 @@ Deno.test('Result', async (t) => {
       await t.step('should pass correct error to async provider', async () => {
         const result = Result.Error<number>('other')
         const value = await result.otherwise(async (error: ResultError) =>
-          error === 'expected' ? 3.14 : 1.618
+          await Promise.resolve(error === 'expected' ? 3.14 : 1.618)
         )
         assertEquals(value, 1.618)
       })
@@ -117,10 +134,8 @@ Deno.test('Result', async (t) => {
         const testError = new TestError('other', 'test error')
         const result = Result.Error<number>(testError)
         const value = await result.otherwise(async (error: ResultError) => {
-          if (error instanceof TestError && error.kind === 'expected') {
-            return 3.14
-          }
-          return 1.618
+          const computed = error instanceof TestError && error.kind === 'expected' ? 3.14 : 1.618
+          return await Promise.resolve(computed)
         })
         assertEquals(value, 1.618)
       })
