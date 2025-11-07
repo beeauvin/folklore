@@ -16,6 +16,11 @@
 
 # folklore
 
+> **⚠️ This TypeScript library is no longer maintained.**
+>
+> Folklore has been well-tested and should be reasonably safe to use in production, but no further
+> updates will be made. The library is feature-complete and stable at v0.5.0.
+
 Folklore provides two essential types for writing more reliable TypeScript: `Maybe` for handling
 optional values and `Result` for managing errors without exceptions.
 
@@ -87,12 +92,11 @@ examples and usage guidance for every method. See
 [#13: A Retelling, not a reimplementation](https://github.com/beeauvin/folklore/issues/13) for more
 details on API decisions.
 
-## Status & Contributing
+## Status
 
-Folklore is used in production on several large/critical TypeScript projects and is well-tested.
-
-If you're interested in contributing, please open an issue to discuss your idea first. I am very
-open to anything docs/stability/project related.
+Folklore is no longer actively maintained. The library is feature-complete, well-tested, and has
+been used in production on several large/critical TypeScript projects. Version 0.5.0 represents the
+final stable release.
 
 ## License
 
