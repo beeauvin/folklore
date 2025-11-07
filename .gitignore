@@ -10,3 +10,10 @@ coverage
 
 # env
 .env
+
+# ai
+claude.md
+.claude/
+agents.md
+.agents/
+.ai/
