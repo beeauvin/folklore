@@ -9,15 +9,15 @@ export const pkg = {
   name: 'folklore',
   version: jsr.default.version,
   description:
-    'A small, focused TypeScript library for safer code through functional patterns using natural language. Inspired by folktale.',
+    'A small, focused TypeScript library for safer code through functional patterns. Inspired by folktale.',
   author: 'Cassidy Spring (Bee) <79487947+beeauvin@users.noreply.github.com>',
   license: 'MPL-2.0',
   homepage: 'https://github.com/beeauvin/folklore#readme',
   repository: {
-    type: 'git',
-    url: 'git+https://github.com/beeauvin/folklore.git',
+    'type': 'git',
+    'url': 'git+https://github.com/beeauvin/folklore.git',
   },
   bugs: {
-    url: 'https://github.com/beeauvin/folklore/issues',
+    'url': 'https://github.com/beeauvin/folklore/issues',
   },
 }
