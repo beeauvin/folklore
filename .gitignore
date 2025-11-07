@@ -1,8 +1,10 @@
-# testing
-coverage
-
-# build
-.dist
+# swift
+.build/
+Packages/
+xcuserdata/
+DerivedData/
+.swiftpm/
+.netrc
 
 # misc
 .DS_Store

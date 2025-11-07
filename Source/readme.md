@@ -1,46 +1,8 @@
-# 🍄 Folklore
-
-![license](https://img.shields.io/github/license/beeauvin/folklore)
-[![tests](https://github.com/beeauvin/folklore/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/beeauvin/folklore/actions/workflows/continuous-integration)
-[![codecov](https://codecov.io/gh/beeauvin/folklore/graph/badge.svg?token=19O67TDUG0)](https://codecov.io/gh/beeauvin/folklore)
-
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbeeauvin%2Ffolklore%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/beeauvin/folklore)
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbeeauvin%2Ffolklore%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/beeauvin/folklore)
-
-🍄 Folklore is a small swift library that provides natural language extensions for core swift types.
-
-## Installation
-
-Add Folklore to your Swift package dependencies:
-
-```swift
-dependencies: [
-  .package(url: "https://github.com/beeauvin/folklore.git", upToNextMinor: "1.0.0")
-]
-```
-
-## Usage
-
-```swift
-import Folklore
-
-// Use Optional extensions
-let username: String? = get_username()
-let display_name = username.otherwise("Guest")
-
-// Use Result extensions
-let api_result: Result<User, APIError> = api.fetch_user()
-let user = api_result.otherwise { error in
-    default_user_for_error(error)
-}
-
-// Convert between types
-let user_optional: User? = api_result.transmute()
-```
-
-## Features
+# Folklore
 
 Folklore provides natural language extensions for Swift's Optional and Result types, plus seamless conversion between them. It transforms how you work with these fundamental types by replacing symbolic operations with expressive, readable methods.
+
+## Features
 
 ### Optional Extensions
 
@@ -322,8 +284,21 @@ let user_optional: User? = user_result.transmute()
 let error_optional: APIError? = user_result.transmute(.error)
 ```
 
-## License
+## Usage
 
-Folklore is provided under the [Mozilla Public License 2.0](https://mozilla.org/MPL/2.0/).
+```swift
+import Folklore
 
-A copy of the MPLv2 is included [license.md](/license.md) file for convenience.
+// Use Optional extensions
+let username: String? = get_username()
+let display_name = username.otherwise("Guest")
+
+// Use Result extensions
+let api_result: Result<User, APIError> = api.fetch_user()
+let user = api_result.otherwise { error in
+    default_user_for_error(error)
+}
+
+// Convert between types
+let user_optional: User? = api_result.transmute()
+```
