@@ -12,12 +12,5 @@ export const pkg = {
     'A small, focused TypeScript library for safer code through functional patterns. Inspired by folktale.',
   author: 'Cassidy Spring (Bee) <79487947+beeauvin@users.noreply.github.com>',
   license: 'MPL-2.0',
-  homepage: 'https://github.com/beeauvin/folklore#readme',
-  repository: {
-    'type': 'git',
-    'url': 'git+https://github.com/beeauvin/folklore.git',
-  },
-  bugs: {
-    'url': 'https://github.com/beeauvin/folklore/issues',
-  },
+  homepage: 'https://github.com/beeauvin/folklore/tree/v0.5.0',
 }
