@@ -1,3 +1,4 @@
+# Copyright © 2025 Cassidy Spring (Bee). Folklore Project.
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -14,47 +15,38 @@ concurrency:
   group: continuous-integration-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v5
-      - uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
-      - run: deno lint
-
-  format:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v5
-      - uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
-      - run: deno fmt --check
-
   test:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
+    name: test with swift ${{ matrix.swift }} on ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-15, ubuntu-latest]
+        swift: ["6.2", "6.1", "6.0"]
+    runs-on: ${{ matrix.os }}
     steps:
+      - uses: beeauvin/swiftly-swift@v1
+        with:
+          swift-version: ${{ matrix.swift }}
       - uses: actions/checkout@v5
-      - uses: denoland/setup-deno@v2
+      - name: test
+        run: swift test --parallel
+
+  coverage:
+    runs-on: macos-latest
+    steps:
+      - uses: maxim-lobanov/setup-xcode@v1
         with:
-          deno-version: v2.x
-      - run: deno task coverage:report
-      - uses: codecov/codecov-action@v5
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          xcode-version: latest-stable
+      - uses: actions/checkout@v5
+      - name: test
+        run: swift test --parallel --enable-code-coverage
+      - name: report
+        run: xcrun llvm-cov export -format=lcov .build/arm64-apple-macosx/debug/FolklorePackageTests.xctest/Contents/MacOS/FolklorePackageTests -instr-profile .build/arm64-apple-macosx/debug/codecov/default.profdata --ignore-filename-regex=".build|Tests" > coverage.lcov
+      - name: coverage
+        uses: codecov/codecov-action@v5
         with:
-          fail_ci_if_error: true
-          files: ./coverage/lcov.info
-          flags: unittests
-          verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.lcov
