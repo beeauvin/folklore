@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  A small, focused TypeScript library for safer code through functional patterns using natural language. Inspired by <a href="https://folktale.origamitower.com">folktale</a>.
+  A small, focused TypeScript library for safer code through functional patterns. Inspired by <a href="https://folktale.origamitower.com">folktale</a>,
 </p>
 
 <p align="center">
@@ -16,7 +16,7 @@
 
 # folklore
 
-Folklore provides two essential types for writing more reliable TypeScript: `Optional` for handling
+Folklore provides two essential types for writing more reliable TypeScript: `Maybe` for handling
 optional values and `Result` for managing errors without exceptions.
 
 ## Installation
@@ -39,41 +39,22 @@ npm install folklore
 
 ## Quick Start
 
-### Optional - Safe Optional Values
+### Maybe - Safe Optional Values
 
-Handle nullable values with readable, natural syntax:
+Handle nullable values without null checks:
 
 ```typescript
-import { Optional } from 'folklore'
+import { Maybe } from 'folklore'
 
-function findUser(id: string): Optional<User> {
+function findUser(id: string): Maybe<User> {
   const user = database.get(id)
-  return Optional.FromNullable(user)
+  return Maybe.FromNullable(user)
 }
 
-// Basic transformation and fallback
 const greeting = findUser('123')
-  .transform((user) => user.name)
-  .transform((name) => `Hello, ${name}!`)
-  .otherwise('Hello, stranger!')
-
-// Optional chaining with multiple fallbacks
-const displayName = primaryCache
-  .retrieve(key)
-  .optionally(backupCache.retrieve(key))
-  .otherwise('Guest')
-
-// Side effects with when
-findUser('123').when({
-  some: (user) => analytics.track(user.id),
-  none: () => analytics.trackAnonymous(),
-})
-
-// Filtering with where
-const validId = getUserId()
-  .where((id) => id > 0)
-  .transform((id) => fetchUser(id))
-  .otherwise(guestUser)
+  .map((user) => user.name)
+  .map((name) => `Hello, ${name}!`)
+  .getOrElse('Hello, stranger!')
 ```
 
 ### Result - Error Handling Without Exceptions
