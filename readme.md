@@ -14,8 +14,14 @@
 Add Folklore to your Swift package dependencies:
 
 ```swift
+// Package Dependencies
 dependencies: [
-  .package(url: "https://github.com/beeauvin/folklore.git", upToNextMinor: "1.0.0")
+  .package(url: "https://github.com/beeauvin/folklore.git", from: "1.0.0")
+]
+
+// Target Dependencies
+dependencies: [
+  .product(name: "Folklore", package: "folklore")
 ]
 ```
 
